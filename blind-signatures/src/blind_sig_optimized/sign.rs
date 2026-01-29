@@ -21,10 +21,15 @@ impl BlindSignatureOptimized {
     /// let bs = BlindSignatureOptimized::setup(ZKType::FV1_128);
     /// let (pk, sk) = bs.keygen();
     /// let m = b"Hello World!".to_vec();
+    /// let mut additional_r: [u8; 32] = [0xff; 32];
     ///
     /// let (bm, state) = bs.sign_1(&m, &mut additional_r);
     /// ```
-    pub fn sign_1(&self, m: &MessageType, additional_r: &mut [u8]) -> (BlindedMessageType, VOLEMAYOProofState) {
+    pub fn sign_1(
+        &self,
+        m: &MessageType,
+        additional_r: &mut [u8],
+    ) -> (BlindedMessageType, VOLEMAYOProofState) {
         let mut state = self.vole_mayo.prove_1(additional_r);
         let proof1_size = self.vole_mayo.vole_mayo_params.proof1_size;
         let mup1 = [m.as_slice(), &state.proof[..proof1_size]].concat();
@@ -62,6 +67,7 @@ impl BlindSignatureOptimized {
     /// let bs = BlindSignatureOptimized::setup(ZKType::FV1_128);
     /// let (pk, sk) = bs.keygen();
     /// let m = b"Hello World!".to_vec();
+    /// let mut additional_r: [u8; 32] = [0xff; 32];
     ///
     /// let (bm, state) = bs.sign_1(&m, &mut additional_r);
     /// let bsig = bs.sign_2(&sk, &bm);
@@ -88,10 +94,11 @@ impl BlindSignatureOptimized {
     /// let (pk, sk) = bs.keygen();
     /// let epk = bs.mayo.expand_pk(&pk);
     /// let m = b"Hello World!".to_vec();
+    /// let mut additional_r: [u8; 32] = [0xff; 32];
     ///
     /// let (bm, state) = bs.sign_1(&m, &mut additional_r);
     /// let bsig = bs.sign_2(&sk, &bm);
-    /// let sig = bs.sign_3(&pk, &epk, &bsig, state);
+    /// let sig = bs.sign_3(&pk, &epk, &bsig, state, &mut additional_r);
     /// ```
     pub fn sign_3(
         &self,
@@ -109,15 +116,15 @@ impl BlindSignatureOptimized {
 
         let packed_sk = [packed_pk.as_slice(), state.r.as_slice(), bsig].concat();
 
-        self.vole_mayo.prove_2(state, &mut packed_pk, &packed_sk, additional_r)
+        self.vole_mayo
+            .prove_2(state, &mut packed_pk, &packed_sk, additional_r)
     }
 }
 
 #[cfg(test)]
 mod test {
-    use std::time::Instant;
-
     use crate::blind_sig_optimized::BlindSignatureOptimized;
+    use std::time::Instant;
 
     /// Ensures that an entire loop of keygen, sign1, sign2, sign3 and verify accepts
     #[test]
@@ -133,7 +140,6 @@ mod test {
         // println!("Benching SV1_128");
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
-            
             let (s1, state) = bs.sign_1(&m, &mut additional_r);
             let bsig = bs.sign_2(&sk, &s1);
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
@@ -157,12 +163,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
             duration = start.elapsed();
@@ -178,8 +184,15 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("One-More-MAYO-128s - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "One-More-MAYO-128s - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
         }
 
@@ -187,7 +200,6 @@ mod test {
         // println!("sign 2 Time elapsed: {} ms", sign2 / iter);
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
-
     }
 
     #[test]
@@ -203,7 +215,6 @@ mod test {
         // println!("Benching FV1_128");
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
-            
             let (s1, state) = bs.sign_1(&m, &mut additional_r);
             let bsig = bs.sign_2(&sk, &s1);
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
@@ -227,12 +238,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
             duration = start.elapsed();
@@ -248,8 +259,15 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("One-More-MAYO-128f - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "One-More-MAYO-128f - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
         }
 
@@ -257,7 +275,6 @@ mod test {
         // println!("sign 2 Time elapsed: {} ms", sign2 / iter);
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
-
     }
 
     #[test]
@@ -273,7 +290,6 @@ mod test {
         // println!("Benching SV1_192");
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
-            
             let (s1, state) = bs.sign_1(&m, &mut additional_r);
             let bsig = bs.sign_2(&sk, &s1);
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
@@ -297,12 +313,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
             duration = start.elapsed();
@@ -318,8 +334,15 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("One-More-MAYO-192s - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "One-More-MAYO-192s - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
         }
 
@@ -327,7 +350,6 @@ mod test {
         // println!("sign 2 Time elapsed: {} ms", sign2 / iter);
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
-
     }
 
     #[test]
@@ -343,7 +365,6 @@ mod test {
         // println!("Benching FV1_192");
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
-            
             let (s1, state) = bs.sign_1(&m, &mut additional_r);
             let bsig = bs.sign_2(&sk, &s1);
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
@@ -367,12 +388,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
             duration = start.elapsed();
@@ -388,17 +409,22 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("One-More-MAYO-192f - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "One-More-MAYO-192f - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
-
         }
 
         // println!("sign 1 Time elapsed: {} ms", sign1 / iter);
         // println!("sign 2 Time elapsed: {} ms", sign2 / iter);
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
-
     }
 
     #[test]
@@ -414,7 +440,7 @@ mod test {
         // println!("Benching SV1_256");
         // println!("Started warm-up 10 runs");
         // for _ in 0..10 {
-            
+
         //     let (s1, state) = bs.sign_1(&m, &mut additional_r);
         //     let bsig = bs.sign_2(&sk, &s1);
         //     let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
@@ -438,12 +464,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
             duration = start.elapsed();
@@ -459,17 +485,22 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("One-More-MAYO-256s - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "One-More-MAYO-256s - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
-
         }
 
         // println!("sign 1 Time elapsed: {} ms", sign1 / iter);
         // println!("sign 2 Time elapsed: {} ms", sign2 / iter);
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
-
     }
 
     #[test]
@@ -485,7 +516,7 @@ mod test {
         // println!("Benching FV1_256");
         // println!("Started warm-up 1 run");
         // for _ in 0..1 {
-            
+
         //     let (s1, state) = bs.sign_1(&m, &mut additional_r);
         //     let bsig = bs.sign_2(&sk, &s1);
         //     let sig = bs.sign_3(&pk, &epk_u8, &bsig, state);
@@ -509,12 +540,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
             duration = start.elapsed();
@@ -530,21 +561,25 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("One-More-MAYO-256f - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "One-More-MAYO-256f - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
-
         }
 
         // println!("sign 1 Time elapsed: {} ms", sign1 / iter);
         // println!("sign 2 Time elapsed: {} ms", sign2 / iter);
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
-
     }
 
-
-/*     /// Ensures that not all signatures are accepted
+    /// Ensures that not all signatures are accepted
     #[test]
     fn false_signature_rejected() {
         let bs = BlindSignatureOptimized::setup(crate::zk::ZKType::FV1_128);
@@ -553,14 +588,13 @@ mod test {
         let epk_u8 = bs.mayo.expand_pk(&pk);
 
         let m = b"Hello World!".to_vec();
+        let mut additional_r: [u8; 32] = [0xff; 32];
 
         let (s1, state) = bs.sign_1(&m, &mut additional_r);
         let bsig = bs.sign_2(&sk, &s1);
 
-        let mut sig = bs.sign_3(&pk, &epk_u8, &bsig, state);
+        let mut sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
         sig.proof[0] += 1;
-        assert!(!bs.verify(&epk_u8, &m, &sig))
+        assert!(!bs.verify(&epk_u8, &m, &sig, &mut additional_r))
     }
- */
-
 }

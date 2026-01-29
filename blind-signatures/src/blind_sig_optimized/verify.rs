@@ -21,13 +21,20 @@ impl BlindSignatureOptimized {
     /// let (pk, sk) = bs.keygen();
     /// let epk = bs.mayo.expand_pk(&pk);
     /// let m = b"Hello World!".to_vec();
+    /// let mut additional_r: [u8; 32] = [0xff; 32];
     ///
-    /// let (bm, state) = bs.sign_1(&m);
+    /// let (bm, state) = bs.sign_1(&m, &mut additional_r);
     /// let bsig = bs.sign_2(&sk, &bm);
-    /// let sig = bs.sign_3(&pk, &epk, &bsig, state);
-    /// assert!(bs.verify(&epk, &m, &sig))
+    /// let sig = bs.sign_3(&pk, &epk, &bsig, state, &mut additional_r);
+    /// assert!(bs.verify(&epk, &m, &sig, &mut additional_r))
     /// ```
-    pub fn verify(&self, epk: &[u8], m: &MessageType, sig: &SignatureType, additional_r: &mut [u8]) -> bool {
+    pub fn verify(
+        &self,
+        epk: &[u8],
+        m: &MessageType,
+        sig: &SignatureType,
+        additional_r: &mut [u8],
+    ) -> bool {
         let proof1_size = self.vole_mayo.vole_mayo_params.proof1_size;
         let mup1 = [&m[..], &sig.proof[..proof1_size]].concat();
 
