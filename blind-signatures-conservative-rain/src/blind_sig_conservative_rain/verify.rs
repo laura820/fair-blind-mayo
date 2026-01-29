@@ -23,19 +23,27 @@ impl BlindSignatureConservativeRain {
     /// let mut epk = bs.mayo.expand_pk(&pk_packed);
     ///
     /// let m = b"Hello World!".to_vec();
+    /// let mut additional_r: [u8; 32] = [0xff; 32];
     ///
     /// let (s1, mut state) = bs.sign_1(&m);
     /// let bsig = bs.sign_2(&sk, &s1);
     ///
-    /// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state);
+    /// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
     ///
-    /// assert!(bs.verify(&mut epk, &m, &mut sig))
+    /// assert!(bs.verify(&mut epk, &m, &mut sig, &mut additional_r))
     /// ```
-    pub fn verify(&self, epk: &mut [u8], m: &MessageType, sig: &mut SignatureType, additional_r: &mut [u8]) -> bool {
+    pub fn verify(
+        &self,
+        epk: &mut [u8],
+        m: &MessageType,
+        sig: &mut SignatureType,
+        additional_r: &mut [u8],
+    ) -> bool {
         // 0. hash message to be of fixed length
         let mut msg_hash = vec![0; self.lambda / 8];
         unsafe { shake256(msg_hash.as_mut_ptr(), msg_hash.len(), m.as_ptr(), m.len()) };
         // 1. give it to the circuit
-        self.vole_rain_then_mayo.verify(sig, epk, &mut msg_hash, additional_r)
+        self.vole_rain_then_mayo
+            .verify(sig, epk, &mut msg_hash, additional_r)
     }
 }

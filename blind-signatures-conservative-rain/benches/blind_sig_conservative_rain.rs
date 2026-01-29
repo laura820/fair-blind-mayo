@@ -4,10 +4,10 @@ use blind_signatures_conservative_rain::{
 use criterion::{BatchSize, BenchmarkId, Criterion, criterion_group, criterion_main};
 
 pub const VARIANTS: [ZKType; 2] = [
-    // ZKType::FV1_128,
-    ZKType::FV2_128,
-    // ZKType::SV1_128,
-    ZKType::SV2_128,
+    ZKType::FV1_128,
+    // ZKType::FV2_128,
+    ZKType::SV1_128,
+    // ZKType::SV2_128,
 ];
 
 fn bench_sign1(c: &mut Criterion) {
@@ -63,6 +63,7 @@ fn bench_sign3(c: &mut Criterion) {
     let mut group = c.benchmark_group("bench_sign3_conservative_rain");
 
     let m = b"Hello World!".to_vec();
+    let mut additional_r: [u8; 32] = [0xff; 32];
 
     for zktype in VARIANTS {
         let id = BenchmarkId::from_parameter(format!(
@@ -81,7 +82,9 @@ fn bench_sign3(c: &mut Criterion) {
                     let bsig = bs.sign_2(&sk, &s1);
                     (bs, pk, epk, bsig, state)
                 }, // setup runs once per iteration
-                |(bs, pk, epk, bsig, state)| bs.sign_3(pk, epk, bsig, &mut state.clone()), // only this is timed
+                |(bs, pk, epk, bsig, state)| {
+                    bs.sign_3(pk, epk, bsig, &mut state.clone(), &mut additional_r)
+                }, // only this is timed
                 BatchSize::SmallInput,
             );
         });
@@ -94,6 +97,7 @@ fn bench_verify(c: &mut Criterion) {
     let mut group = c.benchmark_group("bench_verify_conservative_rain");
 
     let m = b"Hello World!".to_vec();
+    let additional_r: [u8; 32] = [0xff; 32];
 
     for zktype in VARIANTS {
         let id = BenchmarkId::from_parameter(format!(
@@ -110,10 +114,16 @@ fn bench_verify(c: &mut Criterion) {
                     let mut epk = bs.mayo.expand_pk(&pk);
                     let (s1, state) = bs.sign_1(&m);
                     let bsig = bs.sign_2(&sk, &s1);
-                    let sig = bs.sign_3(&pk, &mut epk, &bsig, &mut state.clone());
+                    let sig = bs.sign_3(
+                        &pk,
+                        &mut epk,
+                        &bsig,
+                        &mut state.clone(),
+                        &mut additional_r.clone(),
+                    );
                     (bs, epk, sig)
                 }, // setup runs once per iteration
-                |(bs, epk, sig)| bs.verify(epk, &m, sig), // only this is timed
+                |(bs, epk, sig)| bs.verify(epk, &m, sig, &mut additional_r.clone()), // only this is timed
                 BatchSize::SmallInput,
             );
         });

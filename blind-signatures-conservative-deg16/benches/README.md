@@ -7,6 +7,7 @@ Criterion is used for general benchmarks, and flamegraph can be used to look at 
 
 You only need to run ```cargo bench```, but providing more expressions you can define subsets of benchmarks that you want to run.
 The updated benchmarks can be found in the ```target/criterion``` folder.
+Might require running twice due to some compilation issues.
 
 ## Using Cargo Flamegraph
 

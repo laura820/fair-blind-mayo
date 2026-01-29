@@ -84,6 +84,7 @@ impl BlindSignatureConservativeRain {
     /// let mut epk = bs.mayo.expand_pk(&pk_packed);
     ///
     /// let m = b"Hello World!".to_vec();
+    /// let mut additional_r: [u8; 32] = [0xff; 32];
     ///
     /// let (s1, mut state) = bs.sign_1(&m);
     /// let bsig = bs.sign_2(&sk, &s1);
@@ -103,10 +104,6 @@ impl BlindSignatureConservativeRain {
         // 0. recompute blinded message
         let com = rain_commitment(msg_hash, rand, self.mayo.mayo_params.m_digest_bytes);
 
-        // println!("msg_hash: {}", msg_hash.iter().map(|b| format!("{:02x}", b)).collect::<String>());
-        // println!("rand: {}", rand.iter().map(|b| format!("{:02x}", b)).collect::<String>());
-        // println!("com: {}", com.iter().map(|b| format!("{:02x}", b)).collect::<String>());
-
         // 1. verify the mayo signature
         assert!(self.mayo.verify_fixed_length_rain(pk, &com, bsig));
         // 2. retrieve salt and signature from blinded signature
@@ -120,9 +117,8 @@ impl BlindSignatureConservativeRain {
 
 #[cfg(test)]
 mod test {
-    use std::time::Instant;
-
     use crate::blind_sig_conservative_rain::BlindSignatureConservativeRain;
+    use std::time::Instant;
 
     #[test]
     fn test_and_bench_sign_loop_conservative_rain_128sv1() {
@@ -137,7 +133,6 @@ mod test {
         // println!("Benching SV1_128");
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
-            
             let (s1, mut state) = bs.sign_1(&m);
             let bsig = bs.sign_2(&sk, &s1);
             let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
@@ -161,12 +156,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&mut epk_u8, &m, &mut sig, &mut additional_r));
             duration = start.elapsed();
@@ -182,10 +177,16 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("RainHash+MAYO-128s - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "RainHash+MAYO-128s - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
-
         }
 
         // println!("sign 1 Time elapsed: {} ms", sign1 / iter);
@@ -193,7 +194,6 @@ mod test {
         // println!("sign 3 Time elapsed: {} ms", sign3 / iter);
         // println!("verify Time elapsed: {} ms", verify / iter);
     }
-
 
     #[test]
     fn test_and_bench_sign_loop_conservative_rain_128fv1() {
@@ -208,7 +208,6 @@ mod test {
         // println!("Benching SV1_128");
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
-            
             let (s1, mut state) = bs.sign_1(&m);
             let bsig = bs.sign_2(&sk, &s1);
             let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
@@ -232,12 +231,12 @@ mod test {
             let bsig = bs.sign_2(&sk, &s1);
             duration = start.elapsed();
             sign2 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
-            
+
             start = Instant::now();
             assert!(bs.verify(&mut epk_u8, &m, &mut sig, &mut additional_r));
             duration = start.elapsed();
@@ -253,10 +252,16 @@ mod test {
             // }
 
             if i == (iter as i32) - 1 {
-                println!("RainHash+MAYO-128f - {}, {}, {}, {}, {}, {}", 
-                sign1 / iter, sign2 / iter, sign3 / iter, verify / iter, (s1.len() + bsig.len()) as f64 / 1024.0, sig.proof.len() as f64 / 1024.0);
+                println!(
+                    "RainHash+MAYO-128f - {}, {}, {}, {}, {}, {}",
+                    sign1 / iter,
+                    sign2 / iter,
+                    sign3 / iter,
+                    verify / iter,
+                    (s1.len() + bsig.len()) as f64 / 1024.0,
+                    sig.proof.len() as f64 / 1024.0
+                );
             }
-
         }
 
         // println!("sign 1 Time elapsed: {} ms", sign1 / iter);

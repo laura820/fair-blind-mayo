@@ -32,23 +32,14 @@ pub fn rain_commitment(
 ) -> CommitmentType {
     assert!(output_len <= 64);
     let mut output = vec![0; output_len];
-
-    // println!("m {:?}", m);
-    // println!("m: {}", m.iter().map(|b| format!("{:02x}", b)).collect::<String>());
-    // println!("r {:?}", r);
-    // println!("r: {}", r.iter().map(|b| format!("{:02x}", b)).collect::<String>());
+    assert!(m.len() + r.len() <= 64);
 
     let mut input = Vec::with_capacity(64);
     input.extend(m);
     input.extend(r);
-    assert_eq!(m.len() + r.len(), 32);
     input.extend(vec![0xff; 64 - m.len() - r.len()]);
 
-    // println!("input {:?}", input);
-
     unsafe { rain_hash_512_7_c(output.as_mut_ptr(), output_len, input.as_ptr(), input.len()) };
-
-    // println!("output: {}", output.iter().map(|b| format!("{:02x}", b)).collect::<String>());
 
     output
 }

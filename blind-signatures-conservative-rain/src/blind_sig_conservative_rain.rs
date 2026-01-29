@@ -36,13 +36,14 @@ pub type UserStateType = (MessageType, CommitmentRandomnessType); //(pk, m, r)
 /// let mut epk = bs.mayo.expand_pk(&pk_packed);
 ///
 /// let m = b"Hello World!".to_vec();
+/// let mut additional_r: [u8; 32] = [0xff; 32];
 ///
 /// let (s1, mut state) = bs.sign_1(&m);
 /// let bsig = bs.sign_2(&sk, &s1);
 ///
-/// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state);
+/// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
 ///
-/// assert!(bs.verify(&mut epk, &m, &mut sig))
+/// assert!(bs.verify(&mut epk, &m, &mut sig, &mut additional_r))
 /// ```
 pub struct BlindSignatureConservativeRain {
     pub lambda: usize,
