@@ -18,8 +18,7 @@ These are combined with the VOLEith proof framework from FAEST, which has 2 vers
 
 ## Project Structure
 ```
-PQ_BLIND_SIGNATURES/                                    # a simplified overview
-├── benchmarks/                             # Benchmark evaluations
+PQ_BLIND_SIGNATURES/                        # a simplified overview
 ├── blind-signatures/                       # One-More MAYO
  ├── src/
  └── benches/
@@ -29,7 +28,7 @@ PQ_BLIND_SIGNATURES/                                    # a si
 ├── blind-signatures-conservative-deg16/    # SHAKE256-Deg16 + MAYO (2)
  ├── src/
  └── benches/
-├── blind-signatures-conservative-rain/    # RainHash + MAYO (3)
+├── blind-signatures-conservative-rain/     # RainHash + MAYO (3)
  ├── src/
  └── benches/
 ├── mayo-c-sys/                             # FFI for MAYO
@@ -45,7 +44,8 @@ PQ_BLIND_SIGNATURES/                                    # a si
  ├── build_consv_bs_keccak.sh               # compiles KECCAK + MAYO BS
  ├── build_consv_bs_rainhash.sh             # compiles RainHash + MAYO BS
  ├── build_opti_bs.sh                       # compiles MAYO BS
-├── bench.sh/                                   # For benchmarking all blind-signatures
+├── bench.sh                                # For benchmarking all blind-signatures
+└── bench_log.txt                           # contains benchmarking results
 ```
 
 The constructions in this work utilize highly optimized frameworks in different programming languages (C and C++) designed as standalones.
@@ -68,6 +68,7 @@ Nevertheless, we also needed to make some additions to other libraries that we b
 - MAYO: `mayo-c-sys/mayo_without_hashing.c`
     - `mayo_sign_without_hashing`: A sign that just calls the preimage sampling function and also includes no salt
     - `mayo_sign_fixed_length_input`: A sign that expects a fixed-length message input and therefore does not hash the initial message to a fixed length
+- MAYO: `mayo-c-rain-sys`: We replaced the internal hash functions in the signature scheme with the RAINHASH, but it is the same otherwise.
 - SHAKE256: `vole/common/fips202.c`:
     - `shake256_w`: Normal shake where each intermediate S is written to a witness. The construction does not provide an explicit output and outputs the S of the final round, from where a hash output of up to the SHAKE256 rate can be extracted
         - also has the modification to only output the intermediate S values from every 6th round
@@ -93,9 +94,9 @@ We briefly describe them here for the interested reader:
         - contains the RainHash constraints for 7 rounds RainHash with deg2 check every round
 - `vole/keccak_then_mayo_bs/owf_proof.inc`: `enc_constraints`
 
-## Requirements
+## Requirements and Installation
 
-tested using WSL and Ubuntu 24.04
+We constructed the project using Ubuntu 24.04 on WSL with the following requirements.
 
 - gcc >= 14.2.0
 - meson >= 1.7.0 (installation via pipx)
@@ -106,6 +107,14 @@ tested using WSL and Ubuntu 24.04
 - cmake >= 3.28.3 (tested version) (needed for rainhash)
 - preferably run in vs code terminal, manages env and other dependencies automatically
 
+We have a separate small installation guide, where we ran our code on a fresh installation of Ubuntu 24.04 on WSL.
+The file is [here](manual-installation.md).
+
+## Minimal Working Example
+
+After having finished the previous installation guide, you can run our code.
+If you have not already reproduced our results using `./bench.sh`, you can also run a small sanity check making sure all of the compilations work by navigating to `blind-signatures-conservative-deg16` and running `RUST_MIN_STACK=8388608 cargo test test_and_bench_sign_loop_conservative_128fv1`.
+
 ## Build
 
 For the intermediate constructions, there are explicit build files such as
@@ -113,7 +122,7 @@ For the intermediate constructions, there are explicit build files such as
 
 To build the blind signatures themselves, go to the respective construction of choice:
 `blind-signatures` (optmized bs), `blind-signatures-conservative`, `blind-signatures-conservative-deg16`, `blind-signatures-conservative-rain` or `blind-signatures-conservative-rain-deg16` and run `cargo build` *or* just run tests directly.
-There, you can, for instance, execute the tests implemented within the code with the command: `cargo test`. **However**, the default stack size in Rust is not sufficient for the map evaluations in MAYO, so when running the tests, the stack size needs to be adjusted manually, e.g., `RUST_MIN_STACK=4194304 cargo test`.
+There, you can, for instance, execute the tests implemented within the code with the command: `cargo test`. **However**, the default stack size in Rust is not sufficient for the map evaluations in MAYO, so when running the tests, the stack size needs to be adjusted manually, e.g., `RUST_MIN_STACK=8388608 cargo test`.
 
 ### Did you get this Repository as a ZIP Folder?
 
@@ -140,15 +149,12 @@ Once they are cleaned, go back to the desired rust construction, run `cargo clea
 
 ## Benchmarks
 
-Our benchmarks for the blind signatures can be found in the folder `benchmarks` and then for each of the constructions there is a dedicated benchmark folder with the reports.
-The reports can be opened as a standard html file.
+Easiest option:
+Just run `bench.sh`, grab a coffee and relax! Bench results are output in `bench_log.txt`. The miscellanenous bench results are output in `bench_log_misc.txt`. `bench.sh` may need ```chmod +x``` permission on first run as discussed above. Depending on the machine the full benching may some minutes. View `bench_log_misc.txt` and the terminal for compile and bench progress. The benchmarks themselves also act as test-cases verifying the final blind signatures
 
-Easiest option!
-Just run the bench.sh, grab a coffee and relax! Bench results are output in `bench_log.txt`. The miscelenous bench results are output in `bench_log_misc.txt`. `bench.sh` may need ```chmod +x``` permission on first run as discussed above. Depending on the machine the full benching may some minutes. View `bench_log_misc.txt` and the terminal for compile and bench progress. The benchmarks themselves also act as test-cases verifying the final blind signatures
+### More detailed Benchmarks
 
-### How To Build Them Yourself
-
-For benchmarks, the same build tips from the previous section apply.
+The same build tips from the previous section apply.
 The benchmarks utilize [criterion](https://bheisler.github.io/criterion.rs/book/cargo_criterion/cargo_criterion.html).
 To run the benchmarks, run `cargo bench` and potentially limit the constructions to those desired to be benchmarked.
 
