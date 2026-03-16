@@ -515,19 +515,18 @@ mod test {
 
         // println!("Benching FV1_256");
         // println!("Started warm-up 1 run");
-        // for _ in 0..1 {
-
-        //     let (s1, state) = bs.sign_1(&m, &mut additional_r);
-        //     let bsig = bs.sign_2(&sk, &s1);
-        //     let sig = bs.sign_3(&pk, &epk_u8, &bsig, state);
-        //     assert!(bs.verify(&epk_u8, &m, &sig));
-        // }
+        for _ in 0..10 {
+            let (s1, state) = bs.sign_1(&m, &mut additional_r);
+            let bsig = bs.sign_2(&sk, &s1);
+            let sig = bs.sign_3(&pk, &epk_u8, &bsig, state, &mut additional_r);
+            assert!(bs.verify(&epk_u8, &m, &sig, &mut additional_r));
+        }
 
         let mut sign1 = 0.0;
         let mut sign2 = 0.0;
         let mut sign3 = 0.0;
         let mut verify = 0.0;
-        let iter = 1.0;
+        let iter = 20.0;
 
         // println!("Bench started 0 / {:?}", iter);
         for i in 0..iter as i32 {

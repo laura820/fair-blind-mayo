@@ -409,7 +409,7 @@ using mayo_128_s = parameter_set<secpar::s128, 9, owf::mayo, prg::aes_ctr, prg::
 using mayo_128_f = parameter_set<secpar::s128, 16, owf::mayo, prg::aes_ctr, prg::aes_ctr>;
 using mayo_192_s = parameter_set<secpar::s192, 14, owf::mayo, prg::aes_ctr, prg::aes_ctr>;
 using mayo_192_f = parameter_set<secpar::s192, 24, owf::mayo, prg::aes_ctr, prg::aes_ctr>;
-using mayo_256_s = parameter_set<secpar::s256, 22, owf::mayo, prg::aes_ctr, prg::aes_ctr>;
+using mayo_256_s = parameter_set<secpar::s256, 19, owf::mayo, prg::aes_ctr, prg::aes_ctr>;
 using mayo_256_f = parameter_set<secpar::s256, 32, owf::mayo, prg::aes_ctr, prg::aes_ctr>;
 
 } // namespace v1
