@@ -163,6 +163,14 @@ constexpr std::size_t RAND_SIZE_BITS = secpar_to_bits(S);
 template <secpar S>
 constexpr std::size_t RAND_SIZE_BYTES = (RAND_SIZE_BITS<S> + 7) / 8;
 template <secpar S>
+constexpr std::size_t PSEUDONYM_SIZE_BITS = secpar_to_bits(S);
+template <secpar S>
+constexpr std::size_t PSEUDONYM_SIZE_BYTES = (PSEUDONYM_SIZE_BITS<S> + 7) / 8;
+template <secpar S>
+constexpr std::size_t OPENING_SIZE_BITS = PSEUDONYM_SIZE_BITS<S> + RAND_SIZE_BITS<S>;
+template <secpar S>
+constexpr std::size_t OPENING_SIZE_BYTES = PSEUDONYM_SIZE_BYTES<S> + RAND_SIZE_BYTES<S>;
+template <secpar S>
 constexpr std::size_t HASHED_MSG_SIZE_BYTES = (HASHED_MSG_SIZE_BITS<S> + 7) / 8;
 // template <secpar S>
 // constexpr std::size_t CPK_SIZE_BYTES = (CPK_SIZE_BITS<S> + 7) / 8;
@@ -196,13 +204,13 @@ constexpr std::size_t VOLEKECCAK_PUBLIC_SIZE_BYTES = VOLEKECCAK_PK_OUTPUT_BYTES;
 #if defined KECCAK_DEG_16
 // 4 rounds forward, 2 rounds backward, contains intermediate witness and the output
 template <secpar S>
-constexpr std::size_t VOLEKECCAK_WITNESS_SIZE_BITS = RAND_SIZE_BITS<S> + (VOLEKECCAK_B*((VOLEKECCAK_NUM_ROUNDS/6)-1) + VOLEKECCAK_B)
+constexpr std::size_t VOLEKECCAK_WITNESS_SIZE_BITS = OPENING_SIZE_BITS<S> + (VOLEKECCAK_B*((VOLEKECCAK_NUM_ROUNDS/6)-1) + VOLEKECCAK_B)
                                                 + VOLEKECCAK_B + (VOLEKECCAK_B*((VOLEKECCAK_NUM_ROUNDS/6)-1) + VOLEKECCAK_B); 
                                                 // ^^^^^^^
                                                 // This one is the M_digest and the signature salt  
 #else
 template <secpar S>
-constexpr std::size_t VOLEKECCAK_WITNESS_SIZE_BITS = RAND_SIZE_BITS<S> + (VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS-1) + VOLEKECCAK_B)
+constexpr std::size_t VOLEKECCAK_WITNESS_SIZE_BITS = OPENING_SIZE_BITS<S> + (VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS-1) + VOLEKECCAK_B)
                                                 + VOLEKECCAK_B + (VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS-1) + VOLEKECCAK_B);  // the output is never revealed
                                                 // ^^^^^^^
                                                 // This one is the M_digest and the signature salt 
@@ -234,8 +242,8 @@ constexpr std::size_t VOLEKECCAK_COMMIT_MU_SIZE_BYTES = (secpar_to_bytes(S) == 1
                                                         (secpar_to_bytes(S) == 24 ? VOLEKECCAK_COMMIT_MU_SIZE_BYTES_L3 : VOLEKECCAK_COMMIT_MU_SIZE_BYTES_L5));
 
 template <secpar S>                                                
-// constexpr std::size_t VOLEKECCAK_COMMITMENT_INPUT_BYTES = CPK_SIZE_BYTES<S> + HASHED_MSG_SIZE_BYTES<S> + RAND_SIZE_BYTES<S>;
-constexpr std::size_t VOLEKECCAK_COMMITMENT_INPUT_BYTES = HASHED_MSG_SIZE_BYTES<S> + RAND_SIZE_BYTES<S>;
+// constexpr std::size_t VOLEKECCAK_COMMITMENT_INPUT_BYTES = CPK_SIZE_BYTES<S> + HASHED_MSG_SIZE_BYTES<S> + OPENING_SIZE_BYTES<S>;
+constexpr std::size_t VOLEKECCAK_COMMITMENT_INPUT_BYTES = HASHED_MSG_SIZE_BYTES<S> + OPENING_SIZE_BYTES<S>;
 template <secpar S>
 constexpr std::size_t VOLEKECCAK_MAYO_HASH_INPUT_BYTES =  VOLEMAYO_DIGEST_BYTES<S> + VOLEMAYO_SALT_BYTES<S>;
 #endif

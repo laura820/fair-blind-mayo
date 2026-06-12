@@ -76,9 +76,9 @@ TEST_CASE("volekeccak_then_mayo vole_prove v2_128_s", "[volekeccak_then_mayo vol
     uint8_t* s = sk_packed.data() + VOLEMAYO_PUBLIC_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_WITNESS_SIZE_BYTES<S>;
     uint8_t* rand = sk_packed.data() + VOLEMAYO_PUBLIC_SIZE_BYTES<P::secpar_v>;
     #if defined KECCAK_DEG_16
-    uint8_t* salt = sk_packed.data() + VOLEMAYO_PUBLIC_SIZE_BYTES<P::secpar_v> + RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6) + VOLEMAYO_DIGEST_BYTES<P::secpar_v>;
+    uint8_t* salt = sk_packed.data() + VOLEMAYO_PUBLIC_SIZE_BYTES<P::secpar_v> + OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6) + VOLEMAYO_DIGEST_BYTES<P::secpar_v>;
     #else
-    uint8_t* salt = sk_packed.data() + VOLEMAYO_PUBLIC_SIZE_BYTES<P::secpar_v> + RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS) + VOLEMAYO_DIGEST_BYTES<P::secpar_v>;
+    uint8_t* salt = sk_packed.data() + VOLEMAYO_PUBLIC_SIZE_BYTES<P::secpar_v> + OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS) + VOLEMAYO_DIGEST_BYTES<P::secpar_v>;
     #endif
 
     uint8_t random_seed = 0;

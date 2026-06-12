@@ -35,7 +35,7 @@ impl VOLEKeccakThenMAYO {
         epk: &mut [u8],
         msg: &mut [u8],
         signature: &mut [u8],
-        rand: &mut [u8],
+        opening: &mut [u8],
         salt: &mut [u8],
         additional_r: &mut [u8],
     ) -> VOLEKeccakThenMAYOProof {
@@ -51,7 +51,7 @@ impl VOLEKeccakThenMAYO {
                 epk.as_mut_ptr(),
                 msg_hash.as_mut_ptr(),
                 signature.as_mut_ptr(),
-                rand.as_mut_ptr(),
+                opening.as_mut_ptr(),
                 salt.as_mut_ptr(),
                 additional_r.as_mut_ptr(),
             )

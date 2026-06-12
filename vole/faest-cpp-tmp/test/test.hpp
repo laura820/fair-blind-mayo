@@ -438,26 +438,26 @@ template <typename P> inline void test_gen_keypair(unsigned char* pk, unsigned c
         memcpy((uint8_t*)keccak_input.data() + offset, pk + pk_offset, HASHED_MSG_SIZE_BYTES<P::secpar_v>);   // some msg hash
         offset += HASHED_MSG_SIZE_BYTES<P::secpar_v>;
         // witness
-        memset_rand((uint8_t*)keccak_input.data() + offset, RAND_SIZE_BYTES<P::secpar_v>);
-        memcpy((uint8_t*)witness.data(), (uint8_t*)keccak_input.data() + offset, RAND_SIZE_BYTES<P::secpar_v>);   
+        memset_rand((uint8_t*)keccak_input.data() + offset, OPENING_SIZE_BYTES<P::secpar_v>);
+        memcpy((uint8_t*)witness.data(), (uint8_t*)keccak_input.data() + offset, OPENING_SIZE_BYTES<P::secpar_v>);   
 
         #if defined KECCAK_DEG_16
-            shake256_w((uint8_t*)witness.data() + RAND_SIZE_BYTES<P::secpar_v>,
+            shake256_w((uint8_t*)witness.data() + OPENING_SIZE_BYTES<P::secpar_v>,
                     (uint8_t*)keccak_input.data(), VOLEKECCAK_COMMITMENT_INPUT_BYTES<P::secpar_v>);
         #else
-            shake256_w((uint8_t*)witness.data() + RAND_SIZE_BYTES<P::secpar_v>,
+            shake256_w((uint8_t*)witness.data() + OPENING_SIZE_BYTES<P::secpar_v>,
                     (uint8_t*)keccak_input.data(), VOLEKECCAK_COMMITMENT_INPUT_BYTES<P::secpar_v>);
         #endif
 
 
         #if defined KECCAK_DEG_16
-            size_t input_idx = RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6);
-            size_t witness_idx = RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6 + 1);
-            size_t output_idx = RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6)
+            size_t input_idx = OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6);
+            size_t witness_idx = OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6 + 1);
+            size_t output_idx = OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6)
                                 + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS/6);
                     
             // copying the digest bytes to a new input block witness
-            size_t prev_output_idx = (RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES*((VOLEKECCAK_NUM_ROUNDS/6) - 1));
+            size_t prev_output_idx = (OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES*((VOLEKECCAK_NUM_ROUNDS/6) - 1));
             memcpy((uint8_t*)witness.data() + input_idx, (uint8_t*)witness.data() + prev_output_idx, VOLEMAYO_DIGEST_BYTES<P::secpar_v>);
 
             // copying the signature salt bytes to a new input block witness after digest bytes
@@ -466,13 +466,13 @@ template <typename P> inline void test_gen_keypair(unsigned char* pk, unsigned c
             shake256_w((uint8_t*)witness.data() + witness_idx,
                     (uint8_t*)witness.data() + input_idx, VOLEKECCAK_MAYO_HASH_INPUT_BYTES<P::secpar_v>);
         #else
-            size_t input_idx = RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS);
-            size_t witness_idx = RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS + 1);
-            size_t output_idx = RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS)
+            size_t input_idx = OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS);
+            size_t witness_idx = OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS + 1);
+            size_t output_idx = OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS)
                                 + VOLEKECCAK_B_BYTES * (VOLEKECCAK_NUM_ROUNDS);
         
             // copying the digest bytes to a new input block witness
-            size_t prev_output_idx = (RAND_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES*((VOLEKECCAK_NUM_ROUNDS) - 1));
+            size_t prev_output_idx = (OPENING_SIZE_BYTES<P::secpar_v> + VOLEKECCAK_B_BYTES*((VOLEKECCAK_NUM_ROUNDS) - 1));
             memcpy((uint8_t*)witness.data() + input_idx, (uint8_t*)witness.data() + prev_output_idx, VOLEMAYO_DIGEST_BYTES<P::secpar_v>);
 
             // copying the signature salt bytes to a new input block witness after digest bytes

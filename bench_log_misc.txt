@@ -1,14 +1,14 @@
 The Meson build system
-Version: 1.7.2
-Source dir: /home/bunty/playground/implementation/blind_sig_usenix/pq_blind_signatures/vole/faest-cpp-tmp
-Build dir: /home/bunty/playground/implementation/blind_sig_usenix/pq_blind_signatures/vole/faest-cpp-tmp/build_debug
+Version: 1.7.0
+Source dir: /home/laura/fair-blind-mayo/vole/faest-cpp-tmp
+Build dir: /home/laura/fair-blind-mayo/vole/faest-cpp-tmp/build_debug
 Build type: native build
 Project name: faest
 Project version: 0.1.0
-C compiler for the host machine: cc (gcc 14.2.0 "cc (GCC) 14.2.0")
-C linker for the host machine: cc ld.bfd 2.38
-C++ compiler for the host machine: c++ (gcc 14.2.0 "c++ (GCC) 14.2.0")
-C++ linker for the host machine: c++ ld.bfd 2.38
+C compiler for the host machine: cc (gcc 14.2.0 "cc (Ubuntu 14.2.0-4ubuntu2~24.04.1) 14.2.0")
+C linker for the host machine: cc ld.bfd 2.42
+C++ compiler for the host machine: c++ (gcc 13.3.0 "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+C++ linker for the host machine: c++ ld.bfd 2.42
 Host machine cpu family: x86_64
 Host machine cpu: x86_64
 
@@ -16,8 +16,8 @@ Executing subproject xkcp
 
 xkcp| Project name: xkcp
 xkcp| Project version: undefined
-xkcp| C compiler for the host machine: cc (gcc 14.2.0 "cc (GCC) 14.2.0")
-xkcp| C linker for the host machine: cc ld.bfd 2.38
+xkcp| C compiler for the host machine: cc (gcc 14.2.0 "cc (Ubuntu 14.2.0-4ubuntu2~24.04.1) 14.2.0")
+xkcp| C linker for the host machine: cc ld.bfd 2.42
 xkcp| Build targets in project: 1
 xkcp| Subproject xkcp finished.
 
@@ -30,10 +30,11 @@ Executing subproject catch2
 
 catch2| Project name: catch2
 catch2| Project version: 3.7.1
-catch2| C++ compiler for the host machine: c++ (gcc 14.2.0 "c++ (GCC) 14.2.0")
-catch2| C++ linker for the host machine: c++ ld.bfd 2.38
+catch2| C++ compiler for the host machine: c++ (gcc 13.3.0 "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0")
+catch2| C++ linker for the host machine: c++ ld.bfd 2.42
 catch2| Configuring catch_user_config.hpp using configuration
-catch2| Found pkg-config: YES (/usr/bin/pkg-config) 0.29.2
+catch2| Did not find pkg-config by name 'pkg-config'
+catch2| Found pkg-config: NO
 catch2| Build targets in project: 6
 catch2| Subproject catch2 finished.
 
@@ -51,260 +52,262 @@ faest 0.1.0
 
 Found ninja-1.12.1 at /usr/local/bin/ninja
 [1/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_low_KeccakP-1600_AVX2_KeccakP-1600-AVX2.s.o
-[2/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/polynomials_constants.cpp.o
-[3/186] Compiling C object libvolekeccak_then_mayo_bs.so.p/sha3_KeccakHashtimes4.c.o
-[4/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_high_Keccak_FIPS202_KeccakHash.c.o
-[5/186] Compiling C object libvolekeccak_then_mayo_bs.so.p/sha3_KeccakSpongetimes4.c.o
-[6/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/generators_catch_generator_exception.cpp.o
-[7/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_high_Keccak_KeccakSponge.c.o
-[8/186] Compiling C object libvolekeccak_then_mayo_bs.so.p/test_fips202.c.o
-[9/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_low_KeccakP-1600-times2_SIMD128_KeccakP-1600-times2-SIMD128.c.o
-[10/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_exception.cpp.o
-[11/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_generatortracker.cpp.o
-[12/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_registry_hub.cpp.o
-[13/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_stats.cpp.o
-[14/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_benchmark_function.cpp.o
-[15/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_capture.cpp.o
-[16/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_reporter_factory.cpp.o
-[17/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_analyse.cpp.o
-[18/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_testcase.cpp.o
-[19/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_catch_chronometer.cpp.o
-[20/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/generators_catch_generators.cpp.o
-[21/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_run_for_at_least.cpp.o
-[22/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_config.cpp.o
-[23/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_context.cpp.o
-[24/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/generators_catch_generators_random.cpp.o
-[25/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_case_insensitive_comparisons.cpp.o
-[26/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_errno_guard.cpp.o
-[27/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_enum_values_registry.cpp.o
-[28/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_debug_console.cpp.o
-[29/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_debugger.cpp.o
-[30/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_getenv.cpp.o
-[31/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_reporter.cpp.o
-[32/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/vector_com.cpp.o
-[33/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_low_KeccakP-1600-times4_AVX2_KeccakP-1600-times4-SIMD256.c.o
-[34/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_enforce.cpp.o
-[35/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_assertion_handler.cpp.o
-[36/186] Linking static target subprojects/xkcp/libxkcp.a
-[37/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_floating_point_helpers.cpp.o
-[38/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_decomposer.cpp.o
-[39/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_console_colour.cpp.o
-[40/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_exception_translator_registry.cpp.o
-[41/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_random_number_generator.cpp.o
-[42/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/small_vole.cpp.o
-[43/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_leak_detector.cpp.o
-[44/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_polyfills.cpp.o
-[45/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_message_info.cpp.o
-[46/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_parse_numbers.cpp.o
-[47/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_fatal_condition_handler.cpp.o
-[48/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_istream.cpp.o
-[49/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_singletons.cpp.o
-[50/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_jsonwriter.cpp.o
-[51/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_output_redirect.cpp.o
-[52/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_lazy_expr.cpp.o
-[53/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_startup_exception_registry.cpp.o
-[54/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_random_seed_generation.cpp.o
-[55/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_clara.cpp.o
-[56/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/vole_commit.cpp.o
+[2/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_high_Keccak_FIPS202_KeccakHash.c.o
+[3/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/polynomials_constants.cpp.o
+[4/186] Compiling C object libvolekeccak_deg16_then_mayo_bs.so.p/sha3_KeccakHashtimes4.c.o
+[5/186] Compiling C object libvolekeccak_deg16_then_mayo_bs.so.p/sha3_KeccakSpongetimes4.c.o
+[6/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_high_Keccak_KeccakSponge.c.o
+[7/186] Compiling C object libvolekeccak_deg16_then_mayo_bs.so.p/test_fips202.c.o
+[8/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_low_KeccakP-1600-times2_SIMD128_KeccakP-1600-times2-SIMD128.c.o
+[9/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_catch_chronometer.cpp.o
+[10/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_analyse.cpp.o
+[11/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_benchmark_function.cpp.o
+[12/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/generators_catch_generator_exception.cpp.o
+[13/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_run_for_at_least.cpp.o
+[14/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/vector_com.cpp.o
+[15/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/benchmark_detail_catch_stats.cpp.o
+[16/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/small_vole.cpp.o
+[17/186] Compiling C object subprojects/xkcp/libxkcp.a.p/lib_low_KeccakP-1600-times4_AVX2_KeccakP-1600-times4-SIMD256.c.o
+[18/186] Linking static target subprojects/xkcp/libxkcp.a
+[19/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/generators_catch_generators.cpp.o
+[20/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_generatortracker.cpp.o
+[21/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_exception.cpp.o
+[22/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_registry_hub.cpp.o
+[23/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_reporter_factory.cpp.o
+[24/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_testcase.cpp.o
+[25/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/generators_catch_generators_random.cpp.o
+[26/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_capture.cpp.o
+[27/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_config.cpp.o
+[28/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_case_insensitive_comparisons.cpp.o
+[29/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_context.cpp.o
+[30/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_debug_console.cpp.o
+[31/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/vole_commit.cpp.o
+[32/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/interfaces_catch_interfaces_reporter.cpp.o
+[33/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_assertion_handler.cpp.o
+[34/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_debugger.cpp.o
+[35/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_errno_guard.cpp.o
+[36/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/faest.cpp.o
+[37/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_enforce.cpp.o
+[38/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_console_colour.cpp.o
+[39/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_floating_point_helpers.cpp.o
+[40/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_getenv.cpp.o
+[41/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_enum_values_registry.cpp.o
+[42/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_exception_translator_registry.cpp.o
+[43/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_clara.cpp.o
+[44/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_leak_detector.cpp.o
+[45/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_decomposer.cpp.o
+[46/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_jsonwriter.cpp.o
+[47/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_istream.cpp.o
+[48/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_message_info.cpp.o
+[49/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_polyfills.cpp.o
+[50/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_random_number_generator.cpp.o
+[51/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_parse_numbers.cpp.o
+[52/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_output_redirect.cpp.o
+[53/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_fatal_condition_handler.cpp.o
+[54/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_lazy_expr.cpp.o
+[55/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_random_seed_generation.cpp.o
+[56/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_commandline.cpp.o
 [57/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_reusable_string_stream.cpp.o
-[58/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_case_info_hasher.cpp.o
-[59/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_list.cpp.o
-[60/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_source_line_info.cpp.o
-[61/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_section.cpp.o
-[62/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_uncaught_exceptions.cpp.o
-[63/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_stdstreams.cpp.o
-[64/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_reporter_spec_parser.cpp.o
-[65/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_registry.cpp.o
-[66/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_string_manip.cpp.o
-[67/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/faest.cpp.o
-[68/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_stringref.cpp.o
-[69/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_reporter_registry.cpp.o
-[70/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_failure_exception.cpp.o
-[71/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_tag_alias_registry.cpp.o
-[72/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_run_context.cpp.o
-[73/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_spec_parser.cpp.o
-[74/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_commandline.cpp.o
+[58/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_singletons.cpp.o
+[59/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_source_line_info.cpp.o
+[60/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_list.cpp.o
+[61/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_startup_exception_registry.cpp.o
+[62/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_stdstreams.cpp.o
+[63/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_reporter_spec_parser.cpp.o
+[64/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_reporter_registry.cpp.o
+[65/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_stringref.cpp.o
+[66/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_case_info_hasher.cpp.o
+[67/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/avx2_aes_impl.cpp.o
+[68/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_section.cpp.o
+[69/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_string_manip.cpp.o
+[70/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_uncaught_exceptions.cpp.o
+[71/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_failure_exception.cpp.o
+[72/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_tag_alias_registry.cpp.o
+[73/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_registry.cpp.o
+[74/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_case_tracker.cpp.o
 [75/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_wildcard_pattern.cpp.o
-[76/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_case_tracker.cpp.o
-[77/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/owf_proof.cpp.o
-[78/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_textflow.cpp.o
-[79/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers.cpp.o
-[80/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_xmlwriter.cpp.o
+[76/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_run_context.cpp.o
+[77/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_spec_parser.cpp.o
+[78/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_xmlwriter.cpp.o
+[79/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_textflow.cpp.o
+[80/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers.cpp.o
 [81/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/internal_catch_test_case_registry_impl.cpp.o
-[82/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_predicate.cpp.o
-[83/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_exception.cpp.o
-[84/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_container_properties.cpp.o
-[85/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_internal_catch_matchers_impl.cpp.o
-[86/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_tag_alias_autoregistrar.cpp.o
-[87/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_assertion_result.cpp.o
-[88/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_templated.cpp.o
-[89/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_totals.cpp.o
-[90/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_quantifiers.cpp.o
-[91/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_approx.cpp.o
-[92/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_floating_point.cpp.o
-[93/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_translate_exception.cpp.o
-[94/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_get_random_seed.cpp.o
-[95/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_version.cpp.o
-[96/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_timer.cpp.o
-[97/186] Compiling C++ object libvolekeccak_then_mayo_bs.so.p/avx2_aes_impl.cpp.o
-[98/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_registry_hub.cpp.o
-[99/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_message.cpp.o
-[100/186] Linking target libvolekeccak_then_mayo_bs.so
-[101/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_config.cpp.o
-[102/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_test_spec.cpp.o
-[103/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_test_case_info.cpp.o
-[104/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_registrars.cpp.o
-[105/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_automake.cpp.o
-[106/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_common_base.cpp.o
-[107/186] Compiling C object librandomness_os.a.p/randomness_os.c.o
-[108/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_event_listener.cpp.o
-[109/186] Generating symbol file libvolekeccak_then_mayo_bs.so.p/libvolekeccak_then_mayo_bs.so.symbols
-[110/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_tostring.cpp.o
-[111/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_helpers_parse_test_spec.cpp.o
-[112/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_compact.cpp.o
-[113/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_console.cpp.o
-[114/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_helpers.cpp.o
-[115/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_cumulative_base.cpp.o
-[116/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_multi.cpp.o
-[117/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_teamcity.cpp.o
-[118/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_tap.cpp.o
-[119/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_streaming_base.cpp.o
-[120/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_session.cpp.o
-[121/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2Main.a.p/internal_catch_main.cpp.o
-[122/186] Linking static target subprojects/Catch2-3.7.1/src/catch2/libCatch2Main.a
-[123/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_sonarqube.cpp.o
-[124/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_json.cpp.o
-[125/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_junit.cpp.o
-[126/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_string.cpp.o
-[127/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_xml.cpp.o
-[128/186] Linking static target subprojects/Catch2-3.7.1/src/catch2/libCatch2.a
-[129/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_ColourImpl.tests.cpp.o
-[130/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Algorithms.tests.cpp.o
-[131/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Details.tests.cpp.o
-[132/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Clara.tests.cpp.o
+[82/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_container_properties.cpp.o
+[83/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_predicate.cpp.o
+[84/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_quantifiers.cpp.o
+[85/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_exception.cpp.o
+[86/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_templated.cpp.o
+[87/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_internal_catch_matchers_impl.cpp.o
+[88/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_floating_point.cpp.o
+[89/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_assertion_result.cpp.o
+[90/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_tag_alias_autoregistrar.cpp.o
+[91/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_get_random_seed.cpp.o
+[92/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_approx.cpp.o
+[93/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_test_case_info.cpp.o
+[94/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_message.cpp.o
+[95/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_totals.cpp.o
+[96/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_registry_hub.cpp.o
+[97/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_translate_exception.cpp.o
+[98/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_version.cpp.o
+[99/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_config.cpp.o
+[100/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_timer.cpp.o
+[101/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_test_spec.cpp.o
+[102/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_tostring.cpp.o
+[103/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/catch_session.cpp.o
+[104/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_automake.cpp.o
+[105/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_common_base.cpp.o
+[106/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_event_listener.cpp.o
+[107/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_compact.cpp.o
+[108/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_registrars.cpp.o
+[109/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_console.cpp.o
+[110/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_cumulative_base.cpp.o
+[111/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/matchers_catch_matchers_string.cpp.o
+[112/186] Compiling C++ object libvolekeccak_deg16_then_mayo_bs.so.p/owf_proof.cpp.o
+[113/186] Linking target libvolekeccak_deg16_then_mayo_bs.so
+/usr/bin/ld: warning: subprojects/xkcp/libxkcp.a.p/lib_low_KeccakP-1600_AVX2_KeccakP-1600-AVX2.s.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+[114/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_multi.cpp.o
+[115/186] Compiling C object librandomness_os.a.p/randomness_os.c.o
+[116/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_helpers.cpp.o
+[117/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_junit.cpp.o
+[118/186] Generating symbol file libvolekeccak_deg16_then_mayo_bs.so.p/libvolekeccak_deg16_then_mayo_bs.so.symbols
+[119/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_helpers_parse_test_spec.cpp.o
+[120/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_json.cpp.o
+[121/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_streaming_base.cpp.o
+[122/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_sonarqube.cpp.o
+[123/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2Main.a.p/internal_catch_main.cpp.o
+[124/186] Linking static target subprojects/Catch2-3.7.1/src/catch2/libCatch2Main.a
+[125/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_tap.cpp.o
+[126/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_teamcity.cpp.o
+[127/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Algorithms.tests.cpp.o
+[128/186] Compiling C++ object subprojects/Catch2-3.7.1/src/catch2/libCatch2.a.p/reporters_catch_reporter_xml.cpp.o
+[129/186] Linking static target subprojects/Catch2-3.7.1/src/catch2/libCatch2.a
+[130/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_ColourImpl.tests.cpp.o
+[131/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Clara.tests.cpp.o
+[132/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Details.tests.cpp.o
 [133/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_CmdLineHelpers.tests.cpp.o
-[134/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Parse.tests.cpp.o
-[135/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Stream.tests.cpp.o
-[136/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Integer.tests.cpp.o
-[137/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_FloatingPoint.tests.cpp.o
-[138/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Sharding.tests.cpp.o
-[139/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_PartTracker.tests.cpp.o
-[140/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TestCaseInfoHasher.tests.cpp.o
-[141/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_StringManip.tests.cpp.o
+[134/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Integer.tests.cpp.o
+[135/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_FloatingPoint.tests.cpp.o
+[136/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Parse.tests.cpp.o
+[137/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_PartTracker.tests.cpp.o
+[138/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Stream.tests.cpp.o
+[139/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Sharding.tests.cpp.o
+[140/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_StringManip.tests.cpp.o
+[141/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_InternalBenchmark.tests.cpp.o
 [142/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_String.tests.cpp.o
-[143/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Tag.tests.cpp.o
-[144/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TestSpecParser.tests.cpp.o
-[145/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Reporters.tests.cpp.o
-[146/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Traits.tests.cpp.o
-[147/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_InternalBenchmark.tests.cpp.o
-[148/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_UniquePtr.tests.cpp.o
-[149/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_ToString.tests.cpp.o
-[150/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_TimingTests_Sleep.tests.cpp.o
-[151/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_BDD.tests.cpp.o
-[152/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_RandomNumberGeneration.tests.cpp.o
-[153/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_TestRegistrations.cpp.o
-[154/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_GeneratorsImpl.tests.cpp.o
-[155/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_CmdLine.tests.cpp.o
-[156/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Approx.tests.cpp.o
-[157/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Compilation.tests.cpp.o
-[158/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Decomposition.tests.cpp.o
-[159/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TextFlow.tests.cpp.o
+[143/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_CmdLine.tests.cpp.o
+[144/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Reporters.tests.cpp.o
+[145/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TestCaseInfoHasher.tests.cpp.o
+[146/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Tag.tests.cpp.o
+[147/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_GeneratorsImpl.tests.cpp.o
+[148/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TestSpecParser.tests.cpp.o
+[149/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_RandomNumberGeneration.tests.cpp.o
+[150/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Traits.tests.cpp.o
+[151/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_UniquePtr.tests.cpp.o
+[152/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_TestRegistrations.cpp.o
+[153/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_ToString.tests.cpp.o
+[154/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_TimingTests_Sleep.tests.cpp.o
+[155/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TextFlow.tests.cpp.o
+[156/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Xml.tests.cpp.o
+[157/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_BDD.tests.cpp.o
+[158/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Approx.tests.cpp.o
+[159/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Decomposition.tests.cpp.o
 [160/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_TestSpec.tests.cpp.o
-[161/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_EnumToString.tests.cpp.o
+[161/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Compilation.tests.cpp.o
 [162/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Exception.tests.cpp.o
-[163/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_IntrospectiveTests_Xml.tests.cpp.o
-[164/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Class.tests.cpp.o
-[165/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Benchmark.tests.cpp.o
-[166/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Condition.tests.cpp.o
-[167/186] Linking static target librandomness_os.a
-[168/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Message.tests.cpp.o
-[169/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringChrono.tests.cpp.o
-[170/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringPair.tests.cpp.o
-[171/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringByte.tests.cpp.o
-[172/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringOptional.tests.cpp.o
-[173/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringTuple.tests.cpp.o
-[174/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringVariant.tests.cpp.o
-[175/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringWhich.tests.cpp.o
-[176/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_VariadicMacros.tests.cpp.o
-[177/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringGeneral.tests.cpp.o
-[178/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringVector.tests.cpp.o
-[179/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Misc.tests.cpp.o
-[180/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Tricky.tests.cpp.o
-[181/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Generators.tests.cpp.o
+[163/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_EnumToString.tests.cpp.o
+[164/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Condition.tests.cpp.o
+[165/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Class.tests.cpp.o
+[166/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Benchmark.tests.cpp.o
+[167/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringByte.tests.cpp.o
+[168/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringChrono.tests.cpp.o
+[169/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Message.tests.cpp.o
+[170/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringOptional.tests.cpp.o
+[171/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringPair.tests.cpp.o
+[172/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringTuple.tests.cpp.o
+[173/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Generators.tests.cpp.o
+[174/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Misc.tests.cpp.o
+[175/186] Linking static target librandomness_os.a
+[176/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringGeneral.tests.cpp.o
+[177/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringWhich.tests.cpp.o
+[178/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringVariant.tests.cpp.o
+[179/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_VariadicMacros.tests.cpp.o
+[180/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_ToStringVector.tests.cpp.o
+[181/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Tricky.tests.cpp.o
 [182/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_Matchers.tests.cpp.o
-[183/186] Compiling C++ object test/tests.p/test_voleconsv_bs.cpp.o
-[184/186] Linking target test/tests
-[185/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_MatchersRanges.tests.cpp.o
-[186/186] Linking target subprojects/Catch2-3.7.1/tests/SelfTest
+[183/186] Compiling C++ object subprojects/Catch2-3.7.1/tests/SelfTest.p/SelfTest_UsageTests_MatchersRanges.tests.cpp.o
+[184/186] Linking target subprojects/Catch2-3.7.1/tests/SelfTest
+[185/186] Compiling C++ object test/tests.p/test_voleconsv_bs.cpp.o
+[186/186] Linking target test/tests
 INFO: autodetecting backend as ninja
 INFO: calculating backend command to run: /usr/local/bin/ninja
-   Compiling proc-macro2 v1.0.103
-   Compiling unicode-ident v1.0.22
-   Compiling quote v1.0.42
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling unicode-ident v1.0.24
    Compiling cfg-if v1.0.4
-   Compiling libc v0.2.178
+   Compiling libc v0.2.186
+   Compiling memchr v2.8.1
    Compiling glob v0.3.3
-   Compiling memchr v2.7.6
    Compiling prettyplease v0.2.37
    Compiling minimal-lexical v0.2.1
-   Compiling regex-syntax v0.8.8
-   Compiling either v1.15.0
-   Compiling zerocopy v0.8.31
-   Compiling rustc-hash v2.1.1
-   Compiling bitflags v2.10.0
-   Compiling shlex v1.3.0
-   Compiling log v0.4.29
+   Compiling regex-syntax v0.8.10
    Compiling libloading v0.8.9
+   Compiling zerocopy v0.8.50
+   Compiling either v1.16.0
+   Compiling clang-sys v1.8.1
+   Compiling log v0.4.31
+   Compiling itertools v0.13.0
+   Compiling nom v7.1.3
+   Compiling bitflags v2.12.1
+   Compiling rustc-hash v2.1.2
+   Compiling shlex v1.3.0
    Compiling crossbeam-utils v0.8.21
    Compiling serde_core v1.0.228
-   Compiling itertools v0.13.0
-   Compiling getrandom v0.3.4
-   Compiling serde v1.0.228
-   Compiling bindgen v0.71.1
+   Compiling syn v2.0.117
    Compiling bindgen v0.72.1
-   Compiling autocfg v1.5.0
-   Compiling serde_json v1.0.145
-   Compiling rayon-core v1.13.0
-   Compiling clang-sys v1.8.1
-   Compiling itoa v1.0.15
-   Compiling ryu v1.0.20
-   Compiling anstyle v1.0.13
-   Compiling ciborium-io v0.2.2
-   Compiling plotters-backend v0.3.7
-   Compiling clap_lex v0.7.6
-   Compiling itertools v0.10.5
-   Compiling same-file v1.0.6
-   Compiling nom v7.1.3
-   Compiling num-traits v0.2.19
-   Compiling clap_builder v4.5.53
-   Compiling cast v0.3.0
-   Compiling plotters-svg v0.3.7
-   Compiling walkdir v2.5.0
-   Compiling crossbeam-epoch v0.9.18
-   Compiling anes v0.1.6
-   Compiling oorandom v11.1.5
-   Compiling syn v2.0.111
-   Compiling crossbeam-deque v0.8.6
-   Compiling blind-signatures-conservative v0.1.0 (/home/bunty/playground/implementation/blind_sig_usenix/pq_blind_signatures/blind-signatures-conservative)
-   Compiling regex-automata v0.4.13
-   Compiling rand_core v0.9.3
-   Compiling plotters v0.3.7
-   Compiling rayon v1.11.0
-   Compiling criterion-plot v0.5.0
+   Compiling regex-automata v0.4.14
+   Compiling serde v1.0.228
+   Compiling autocfg v1.5.1
+   Compiling getrandom v0.3.4
    Compiling cexpr v0.6.0
-   Compiling clap v4.5.53
-   Compiling regex v1.12.2
-   Compiling zerocopy-derive v0.8.31
+   Compiling bindgen v0.71.1
+   Compiling zmij v1.0.21
+   Compiling num-traits v0.2.19
+   Compiling crossbeam-epoch v0.9.18
+   Compiling rayon-core v1.13.0
+   Compiling serde_json v1.0.150
+   Compiling crossbeam-deque v0.8.6
+   Compiling ciborium-io v0.2.2
+   Compiling regex v1.12.3
+   Compiling anstyle v1.0.14
+   Compiling itoa v1.0.18
+   Compiling plotters-backend v0.3.7
+   Compiling clap_lex v1.1.0
+   Compiling rand_core v0.9.5
+   Compiling clap_builder v4.6.0
+   Compiling plotters-svg v0.3.7
+   Compiling itertools v0.10.5
+   Compiling cast v0.3.0
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling criterion-plot v0.5.0
+   Compiling plotters v0.3.7
+   Compiling rayon v1.12.0
+   Compiling zerocopy-derive v0.8.50
    Compiling serde_derive v1.0.228
+   Compiling clap v4.6.1
+   Compiling oorandom v11.1.5
+   Compiling anes v0.1.6
+   Compiling blind-signatures-conservative-deg16 v0.1.0 (/home/laura/fair-blind-mayo/blind-signatures-conservative-deg16)
+   Compiling tinytemplate v1.2.1
+   Compiling mayo-c-sys v0.1.0 (/home/laura/fair-blind-mayo/mayo-c-sys)
+   Compiling vole-keccak-deg16-then-mayo-sys v0.1.0 (/home/laura/fair-blind-mayo/vole-keccak-deg16-then-mayo-sys)
    Compiling half v2.7.1
    Compiling ppv-lite86 v0.2.21
-   Compiling tinytemplate v1.2.1
    Compiling ciborium-ll v0.2.2
    Compiling rand_chacha v0.9.0
    Compiling ciborium v0.2.2
-   Compiling rand v0.9.2
+   Compiling rand v0.9.4
    Compiling criterion v0.6.0
-   Compiling mayo-c-sys v0.1.0 (/home/bunty/playground/implementation/blind_sig_usenix/pq_blind_signatures/mayo-c-sys)
-   Compiling vole-keccak-then-mayo-sys v0.1.0 (/home/bunty/playground/implementation/blind_sig_usenix/pq_blind_signatures/vole-keccak-then-mayo-sys)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 38.54s
-  Executable unittests src/lib.rs (target/debug/deps/blind_signatures_conservative-c6fcc14f5112b548)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 04s
+  Executable unittests src/lib.rs (target/debug/deps/blind_signatures_conservative_deg16-76b010034a73f00e)

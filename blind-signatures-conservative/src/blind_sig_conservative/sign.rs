@@ -26,17 +26,18 @@ impl BlindSignatureConservative {
     /// ```
     ///
     /// Returns a blinded message (commitment) and a user state that consists of:
-    /// the (hashed) message and the commitment randomness.
+    /// the (hashed) message, the commitment pseudonym and the commitment randomness.
     pub fn sign_1(&self, m: &MessageType) -> (BlindedMessageType, UserStateType) {
         let mut rng = rand::rng();
+        let n1 = (0..(self.lambda / 8)).map(|_| rng.random()).collect();
         let r = (0..(self.lambda / 8)).map(|_| rng.random()).collect();
 
         let mut msg_hash = vec![0; self.lambda / 8];
         unsafe { shake256(msg_hash.as_mut_ptr(), msg_hash.len(), m.as_ptr(), m.len()) };
 
-        let com = shake256_commitment(&msg_hash, &r, self.mayo.mayo_params.m_digest_bytes);
+        let com = shake256_commitment(&msg_hash, &n1, &r, self.mayo.mayo_params.m_digest_bytes);
 
-        (com, (msg_hash, r))
+        (com, (msg_hash, n1, r))
     }
 
     /// Deterministicly compute a MAYO signature of the provided blinded message.
@@ -63,7 +64,7 @@ impl BlindSignatureConservative {
     }
 
     /// Runs the zk proof using the blinded signature, the initial proof state
-    /// and the commitment randomness.
+    /// and the commitment opening `(n1, r)`.
     /// Outputs a proof that can be verified by the verification algorithm.
     ///
     /// # Parameters
@@ -98,21 +99,28 @@ impl BlindSignatureConservative {
         state: &mut UserStateType,
         additional_r: &mut [u8],
     ) -> SignatureType {
-        let (msg_hash, rand) = state;
+        let (msg_hash, n1, rand) = state;
+
+        assert_eq!(msg_hash.len(), self.lambda / 8);
+        assert_eq!(n1.len(), self.lambda / 8);
+        assert_eq!(rand.len(), self.lambda / 8);
 
         // 0. recompute blinded message
-        let com = shake256_commitment(msg_hash, rand, self.mayo.mayo_params.m_digest_bytes);
+        let com = shake256_commitment(msg_hash, n1, rand, self.mayo.mayo_params.m_digest_bytes);
         // 1. verify the mayo signature
         assert!(self.mayo.verify_fixed_length(pk, &com, bsig));
         // 2. retrieve salt and signature from blinded signature
         let mut signature = bsig[..(bsig.len() - self.mayo.mayo_params.salt_bytes)].to_vec();
         let mut salt = bsig[(bsig.len() - self.mayo.mayo_params.salt_bytes)..].to_vec();
+        let mut opening = Vec::with_capacity(n1.len() + rand.len());
+        opening.extend_from_slice(n1);
+        opening.extend_from_slice(rand);
         // 3. compute the proof
         self.vole_keccak_then_mayo.prove(
             epk,
             msg_hash,
             &mut signature,
-            rand,
+            &mut opening,
             &mut salt,
             additional_r,
         )

@@ -6,8 +6,8 @@ project('faest', ['c', 'cpp'],
     'cpp_std=c++23',
     'warning_level=everything',
     'b_ndebug=false',
-    'cpp_args=-march=native -mtune=native -g -w',
-    'c_args=-march=native -mtune=native -g -w',
+    'cpp_args=-march=native -mtune=native -O2 -w',
+    'c_args=-march=native -mtune=native -O2 -w',
   ],
 )
 

@@ -1,5 +1,5 @@
 use crate::{
-    commitment::{CommitmentMessageType, CommitmentRandomnessType},
+    commitment::{CommitmentMessageType, CommitmentPseudonymType, CommitmentRandomnessType},
     zk::vole_keccak_then_mayo::{VOLEKeccakThenMAYO, proof_state::VOLEKeccakThenMAYOProof},
 };
 use mayo_c_sys::mayo::{MAYO, MAYOMessageType, MAYOPkType, MAYOSignatureType, MAYOSkType};
@@ -16,7 +16,11 @@ pub type MessageType = MAYOMessageType;
 pub type SignatureType = VOLEKeccakThenMAYOProof;
 pub type BlindedMessageType = CommitmentMessageType;
 pub type BlindedSignatureType = MAYOSignatureType;
-pub type UserStateType = (MessageType, CommitmentRandomnessType); //(pk, m, r)
+pub type UserStateType = (
+    MessageType,
+    CommitmentPseudonymType,
+    CommitmentRandomnessType,
+); //(m, n1, r)
 
 /// This struct contains all the relevant parameters for the blind signature generation.
 ///

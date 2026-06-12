@@ -198,7 +198,7 @@ enc_constraints_fwd_first_full_round(QS* qs_state, size_t round_idx, const publi
     else { 
         
         if (which_keccak_witness_offset == 0) {
-            witness_offset_bit_curr_state = RAND_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*((round_idx/6) - 1); 
+            witness_offset_bit_curr_state = OPENING_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*((round_idx/6) - 1); 
         } else {
             witness_offset_bit_curr_state = which_keccak_witness_offset + VOLEKECCAK_B*(round_idx/6); 
         }
@@ -214,7 +214,7 @@ enc_constraints_fwd_first_full_round(QS* qs_state, size_t round_idx, const publi
                 A_curr[state_bit_offset] = load_const_1_bit_and_combine(qs_state, &msg[state_bit/8], state_bit%8);
                 state_bit_offset += 1;
             }
-            for (size_t state_bit = 0; state_bit < RAND_SIZE_BITS<P::secpar_v>; state_bit++) {
+            for (size_t state_bit = 0; state_bit < OPENING_SIZE_BITS<P::secpar_v>; state_bit++) {
                 const auto A_curr_tmp = qs_state->load_witness_1_bit(witness_offset_bit_curr_state + state_bit);
                 A_curr[state_bit_offset] = quicksilver_gfsecpar<QS>::combine_1_bit(A_curr_tmp.data());
                 state_bit_offset += 1;
@@ -426,7 +426,7 @@ enc_constraints_bkwd_first_full_round(QS* qs_state, size_t round_idx, quicksilve
     
     size_t witness_offset_bit_next_state = 0;
     if (which_keccak_witness_offset == 0) {
-        witness_offset_bit_next_state = RAND_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(round_idx/6);
+        witness_offset_bit_next_state = OPENING_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(round_idx/6);
     } else {
         witness_offset_bit_next_state = which_keccak_witness_offset + VOLEKECCAK_B*(round_idx/6 + 1); 
     }
@@ -786,7 +786,7 @@ enc_constraints_fwd_one_full_round(QS* qs_state, size_t round_idx, const public_
     if (round_idx == 0) { witness_offset_bit_curr_state = which_keccak_witness_offset; }
     else {
         if (which_keccak_witness_offset == 0) {
-            witness_offset_bit_curr_state = RAND_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(round_idx-1); 
+            witness_offset_bit_curr_state = OPENING_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(round_idx-1); 
         } else {
             witness_offset_bit_curr_state = which_keccak_witness_offset + VOLEKECCAK_B*(round_idx); 
         }
@@ -802,7 +802,7 @@ enc_constraints_fwd_one_full_round(QS* qs_state, size_t round_idx, const public_
                 A_curr[state_bit_offset] = load_const_1_bit_and_combine(qs_state, &msg[state_bit/8], state_bit%8);
                 state_bit_offset += 1;
             }
-            for (size_t state_bit = 0; state_bit < RAND_SIZE_BITS<P::secpar_v>; state_bit++) {
+            for (size_t state_bit = 0; state_bit < OPENING_SIZE_BITS<P::secpar_v>; state_bit++) {
                 const auto A_curr_tmp = qs_state->load_witness_1_bit(witness_offset_bit_curr_state + state_bit);
                 A_curr[state_bit_offset] = quicksilver_gfsecpar<QS>::combine_1_bit(A_curr_tmp.data());
                 state_bit_offset += 1;
@@ -914,7 +914,7 @@ enc_constraints_fwd_one_full_round(QS* qs_state, size_t round_idx, const public_
 
     size_t witness_offset_bit_next_state = 0;
     if (which_keccak_witness_offset == 0) {
-        witness_offset_bit_next_state = RAND_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(round_idx);
+        witness_offset_bit_next_state = OPENING_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(round_idx);
     } else {
         witness_offset_bit_next_state = which_keccak_witness_offset + VOLEKECCAK_B*(round_idx + 1); 
     }
@@ -1810,10 +1810,10 @@ static void enc_constraints(QS* qs_state, const public_key<P>* pk, unsigned char
 
     #if defined KECCAK_DEG_16
         // Second keccak taking the output of the first keccak and the salt
-        enc_constraints_keccak<QS, P, O>(qs_state, pk, RAND_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS/6));
+        enc_constraints_keccak<QS, P, O>(qs_state, pk, OPENING_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS/6));
     #else
         // Second keccak taking the output of the first keccak and the salt
-        enc_constraints_keccak<QS, P, O>(qs_state, pk, RAND_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS));
+        enc_constraints_keccak<QS, P, O>(qs_state, pk, OPENING_SIZE_BITS<P::secpar_v> + VOLEKECCAK_B*(VOLEKECCAK_NUM_ROUNDS));
     #endif
     #endif
 

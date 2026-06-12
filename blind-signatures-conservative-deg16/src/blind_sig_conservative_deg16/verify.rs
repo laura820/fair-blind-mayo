@@ -4,7 +4,7 @@ use mayo_c_sys::shake256;
 impl BlindSignatureConservativeDeg16 {
     /// Publicly verifies if the signature is valid, i.e., first it hashes the message to
     /// fixed length and then it verifies if the circuit accepts the proof for a signature
-    /// and it is connected to the message.
+    /// and it is connected to the message through a hidden commitment opening `(n1, r)`.
     /// Outputs either `true` or `false`.
     ///
     /// # Parameters
