@@ -2,7 +2,8 @@ extern crate rand;
 use super::registration::{REGISTRATION_N1_TAG, REGISTRATION_N2_TAG};
 use super::{
     BlindSignatureConservative, BlindedMessageType, BlindedSignatureType, MessageType, PkType,
-    RegistrationSenderOutput, SignatureType, SkType, UserStateType,
+    RegistrationJudgeSignatureType, RegistrationNonceType, RegistrationSenderOutput, SignatureType,
+    SkType, UserStateType,
 };
 use crate::commitment::shake256_commitment;
 use mayo_c_sys::shake256;
@@ -12,8 +13,10 @@ impl BlindSignatureConservative {
     /// Computes a blinded message using a commitment scheme, here a hash-commitment using SHAKE256.
     ///
     /// # Params:
+    /// - `pk`: The compact MAYO public key used for the final signature proof
     /// - `m`: The message that should be blinded
-    /// - `registration`: The sender registration output containing the judge-provided `n1`
+    /// - `n1`: The judge-provided registration nonce
+    /// - `sigj_n1`: The judge signature on `n1`
     ///
     /// # Example
     /// ```
@@ -27,28 +30,32 @@ impl BlindSignatureConservative {
     /// let judge_output = bs.reg_judge(&judge_sk);
     /// let registration = bs.reg_sender(&judge_output);
     ///
-    /// let (bm, state) = bs.sign_1(&m, &registration);
+    /// let (bm, n1, sigj_n1, state) = bs.sign_1(
+    ///     &pk,
+    ///     &m,
+    ///     &registration.n1,
+    ///     &registration.sigj_n1,
+    /// );
     /// ```
     ///
     /// Returns a blinded message (commitment) and a user state that consists of:
     /// the (hashed) message, the commitment pseudonym and the commitment randomness.
     pub fn sign_1(
         &self,
+        pk: &PkType,
         m: &MessageType,
-        registration: &RegistrationSenderOutput,
-    ) -> (BlindedMessageType, UserStateType) {
-        assert_eq!(registration.n1.len(), self.lambda / 8);
-        assert_eq!(registration.alpha.len(), self.lambda / 4);
-        assert_eq!(registration.beta.len(), self.lambda / 2);
-        assert_eq!(registration.pi_n1.len(), registration.n1.len());
-        assert_eq!(registration.n2.len(), registration.n1.len());
+        n1: &RegistrationNonceType,
+        sigj_n1: &RegistrationJudgeSignatureType,
+    ) -> (
+        BlindedMessageType,
+        RegistrationNonceType,
+        RegistrationJudgeSignatureType,
+        UserStateType,
+    ) {
+        assert_eq!(n1.len(), self.lambda / 8);
         assert_eq!(
-            registration.sigj_n1.len(),
-            self.mayo.mayo_params.sig_bytes + registration.n1.len() + 1
-        );
-        assert_eq!(
-            registration.sigj_n2.len(),
-            self.mayo.mayo_params.sig_bytes + registration.n2.len() + 1
+            sigj_n1.len(),
+            self.mayo.mayo_params.sig_bytes + n1.len() + 1
         );
 
         let mut rng = rand::rng();
@@ -57,26 +64,13 @@ impl BlindSignatureConservative {
         let mut msg_hash = vec![0; self.lambda / 8];
         unsafe { shake256(msg_hash.as_mut_ptr(), msg_hash.len(), m.as_ptr(), m.len()) };
 
-        let com = shake256_commitment(
-            &msg_hash,
-            &registration.n1,
-            &r,
-            self.mayo.mayo_params.m_digest_bytes,
-        );
+        let com = shake256_commitment(&msg_hash, n1, &r, self.mayo.mayo_params.m_digest_bytes);
 
         (
             com,
-            (
-                msg_hash,
-                registration.n1.clone(),
-                r,
-                registration.alpha.clone(),
-                registration.beta.clone(),
-                registration.sigj_n1.clone(),
-                registration.sigj_n2.clone(),
-                registration.pi_n1.clone(),
-                registration.n2.clone(),
-            ),
+            n1.clone(),
+            sigj_n1.clone(),
+            (pk.clone(), msg_hash, n1.clone(), r),
         )
     }
 
@@ -101,7 +95,12 @@ impl BlindSignatureConservative {
     /// let judge_output = bs.reg_judge(&judge_sk);
     /// let registration = bs.reg_sender(&judge_output);
     ///
-    /// let (bm, state) = bs.sign_1(&m, &registration);
+    /// let (bm, n1, sigj_n1, state) = bs.sign_1(
+    ///     &pk,
+    ///     &m,
+    ///     &registration.n1,
+    ///     &registration.sigj_n1,
+    /// );
     /// let bsig = bs.sign_2(&sk, &judge_pk, &bm, &registration);
     /// ```
     pub fn sign_2(
@@ -131,10 +130,10 @@ impl BlindSignatureConservative {
     /// Outputs a proof that can be verified by the verification algorithm.
     ///
     /// # Parameters
-    /// - `pk`: the compacted mayo public key
     /// - `epk`: the extended mayo public key
     /// - `bsig` the MAYO preimage for the blinded message
     /// - `state`: the MAYO proof state from `sign_1`
+    /// - `registration`: the sender registration output
     ///
     /// # Example
     /// ```
@@ -152,36 +151,43 @@ impl BlindSignatureConservative {
     /// let judge_output = bs.reg_judge(&judge_sk);
     /// let registration = bs.reg_sender(&judge_output);
     ///
-    /// let (s1, mut state) = bs.sign_1(&m, &registration);
+    /// let (s1, _, _, mut state) = bs.sign_1(
+    ///     &pk_packed,
+    ///     &m,
+    ///     &registration.n1,
+    ///     &registration.sigj_n1,
+    /// );
     /// let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
     ///
-    /// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
+    /// let mut sig = bs.sign_3(&mut epk, &bsig, &mut state, &registration, &mut additional_r);
     /// ```
     pub fn sign_3(
         &self,
-        pk: &PkType,
         epk: &mut [u8],
         bsig: &BlindedSignatureType,
         state: &mut UserStateType,
+        registration: &RegistrationSenderOutput,
         additional_r: &mut [u8],
     ) -> SignatureType {
-        let (msg_hash, n1, rand, alpha, beta, sigj_n1, sigj_n2, pi_n1, n2) = state;
+        let (pk, msg_hash, n1, rand) = state;
 
+        assert_eq!(pk.len(), self.mayo.mayo_params.cpk_bytes);
         assert_eq!(msg_hash.len(), self.lambda / 8);
         assert_eq!(n1.len(), self.lambda / 8);
         assert_eq!(rand.len(), self.lambda / 8);
-        assert_eq!(alpha.len(), self.lambda / 4);
-        assert_eq!(beta.len(), self.lambda / 2);
+        assert_eq!(registration.n1.as_slice(), n1.as_slice());
+        assert_eq!(registration.alpha.len(), self.lambda / 4);
+        assert_eq!(registration.beta.len(), self.lambda / 2);
         assert_eq!(
-            sigj_n1.len(),
+            registration.sigj_n1.len(),
             self.mayo.mayo_params.sig_bytes + n1.len() + 1
         );
         assert_eq!(
-            sigj_n2.len(),
-            self.mayo.mayo_params.sig_bytes + n2.len() + 1
+            registration.sigj_n2.len(),
+            self.mayo.mayo_params.sig_bytes + registration.n2.len() + 1
         );
-        assert_eq!(pi_n1.len(), n1.len());
-        assert_eq!(n2.len(), n1.len());
+        assert_eq!(registration.pi_n1.len(), n1.len());
+        assert_eq!(registration.n2.len(), n1.len());
 
         // 0. recompute blinded message
         let com = shake256_commitment(msg_hash, n1, rand, self.mayo.mayo_params.m_digest_bytes);
@@ -205,15 +211,7 @@ impl BlindSignatureConservative {
 
         SignatureType {
             proof,
-            registration: RegistrationSenderOutput {
-                n1: n1.clone(),
-                sigj_n1: sigj_n1.clone(),
-                pi_n1: pi_n1.clone(),
-                alpha: alpha.clone(),
-                beta: beta.clone(),
-                sigj_n2: sigj_n2.clone(),
-                n2: n2.clone(),
-            },
+            registration: registration.clone(),
         }
     }
 }
@@ -239,9 +237,15 @@ mod test {
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
 
@@ -255,7 +259,7 @@ mod test {
         for i in 0..iter as i32 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
             let mut start = Instant::now();
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let mut duration = start.elapsed();
             sign1 += duration.as_micros() as f64 / 1_000.0;
 
@@ -265,7 +269,13 @@ mod test {
             sign2 += duration.as_micros() as f64 / 1_000.0;
 
             start = Instant::now();
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
 
@@ -317,9 +327,15 @@ mod test {
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
 
@@ -333,7 +349,7 @@ mod test {
         for i in 0..iter as i32 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
             let mut start = Instant::now();
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let mut duration = start.elapsed();
             sign1 += duration.as_micros() as f64 / 1_000.0;
 
@@ -343,7 +359,13 @@ mod test {
             sign2 += duration.as_micros() as f64 / 1_000.0;
 
             start = Instant::now();
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
 
@@ -395,9 +417,15 @@ mod test {
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
 
@@ -411,7 +439,7 @@ mod test {
         for i in 0..iter as i32 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
             let mut start = Instant::now();
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let mut duration = start.elapsed();
             sign1 += duration.as_micros() as f64 / 1_000.0;
 
@@ -421,7 +449,13 @@ mod test {
             sign2 += duration.as_micros() as f64 / 1_000.0;
 
             start = Instant::now();
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
 
@@ -473,9 +507,15 @@ mod test {
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
 
@@ -489,7 +529,7 @@ mod test {
         for i in 0..iter as i32 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
             let mut start = Instant::now();
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let mut duration = start.elapsed();
             sign1 += duration.as_micros() as f64 / 1_000.0;
 
@@ -499,7 +539,13 @@ mod test {
             sign2 += duration.as_micros() as f64 / 1_000.0;
 
             start = Instant::now();
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
 
@@ -551,9 +597,15 @@ mod test {
         // println!("Started warm-up 10 runs");
         for _ in 0..10 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
 
@@ -567,7 +619,7 @@ mod test {
         for i in 0..iter as i32 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
             let mut start = Instant::now();
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let mut duration = start.elapsed();
             sign1 += duration.as_micros() as f64 / 1_000.0;
 
@@ -577,7 +629,13 @@ mod test {
             sign2 += duration.as_micros() as f64 / 1_000.0;
 
             start = Instant::now();
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
 
@@ -629,9 +687,15 @@ mod test {
         // println!("Started warm-up 10 run");
         for _ in 0..10 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
 
@@ -645,7 +709,7 @@ mod test {
         for i in 0..iter as i32 {
             let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
             let mut start = Instant::now();
-            let (s1, mut state) = bs.sign_1(&m, &registration);
+            let (s1, _, _, mut state) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
             let mut duration = start.elapsed();
             sign1 += duration.as_micros() as f64 / 1_000.0;
 
@@ -655,7 +719,13 @@ mod test {
             sign2 += duration.as_micros() as f64 / 1_000.0;
 
             start = Instant::now();
-            let mut sig = bs.sign_3(&pk, &mut epk_u8, &bsig, &mut state, &mut additional_r);
+            let mut sig = bs.sign_3(
+                &mut epk_u8,
+                &bsig,
+                &mut state,
+                &registration,
+                &mut additional_r,
+            );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
 
@@ -705,10 +775,17 @@ mod test {
         let m = b"Hello World!".to_vec();
 
         let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-        let (s1, mut state) = bs.sign_1(&m, &registration);
+        let (s1, _, _, mut state) =
+            bs.sign_1(&pk_packed, &m, &registration.n1, &registration.sigj_n1);
         let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
 
-        let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
+        let mut sig = bs.sign_3(
+            &mut epk,
+            &bsig,
+            &mut state,
+            &registration,
+            &mut additional_r,
+        );
         sig.proof.proof[0] += 1;
 
         assert!(!bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))

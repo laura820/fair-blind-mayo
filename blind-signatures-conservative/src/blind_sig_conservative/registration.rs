@@ -229,12 +229,24 @@ mod test {
                 assert_eq!(sender_output.beta.as_slice(), judge_output.beta.as_slice());
                 assert_eq!(sender_output.n2, expected_n2);
 
-                let (request, mut state) = bs.sign_1(&registration_message, &sender_output);
-                assert_eq!(state.1.as_slice(), judge_output.n1.as_slice());
+                let (request, n1, sigj_n1, mut state) = bs.sign_1(
+                    &pk,
+                    &registration_message,
+                    &sender_output.n1,
+                    &sender_output.sigj_n1,
+                );
+                assert_eq!(n1.as_slice(), judge_output.n1.as_slice());
+                assert_eq!(sigj_n1.as_slice(), judge_output.sigj_n1.as_slice());
+                assert_eq!(state.2.as_slice(), judge_output.n1.as_slice());
 
                 let response = bs.sign_2(&sk, &judge_pk, &request, &sender_output);
-                let mut credential =
-                    bs.sign_3(&pk, &mut epk, &response, &mut state, &mut additional_r);
+                let mut credential = bs.sign_3(
+                    &mut epk,
+                    &response,
+                    &mut state,
+                    &sender_output,
+                    &mut additional_r,
+                );
 
                 assert!(bs.verify(
                     &judge_pk,

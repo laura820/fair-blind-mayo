@@ -30,10 +30,15 @@ impl BlindSignatureConservative {
     /// let judge_output = bs.reg_judge(&judge_sk);
     /// let registration = bs.reg_sender(&judge_output);
     ///
-    /// let (s1, mut state) = bs.sign_1(&m, &registration);
+    /// let (s1, _, _, mut state) = bs.sign_1(
+    ///     &pk_packed,
+    ///     &m,
+    ///     &registration.n1,
+    ///     &registration.sigj_n1,
+    /// );
     /// let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
     ///
-    /// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
+    /// let mut sig = bs.sign_3(&mut epk, &bsig, &mut state, &registration, &mut additional_r);
     ///
     /// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
     /// ```
