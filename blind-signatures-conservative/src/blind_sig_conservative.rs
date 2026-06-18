@@ -5,6 +5,7 @@ use crate::{
 use mayo_c_sys::mayo::{MAYO, MAYOMessageType, MAYOPkType, MAYOSignatureType, MAYOSkType};
 
 pub mod keygen;
+pub mod registration;
 pub mod setup;
 pub mod sign;
 pub mod verify;
@@ -13,14 +14,53 @@ pub mod verify;
 pub type SkType = MAYOSkType;
 pub type PkType = MAYOPkType;
 pub type MessageType = MAYOMessageType;
-pub type SignatureType = VOLEKeccakThenMAYOProof;
 pub type BlindedMessageType = CommitmentMessageType;
 pub type BlindedSignatureType = MAYOSignatureType;
 pub type UserStateType = (
     MessageType,
     CommitmentPseudonymType,
     CommitmentRandomnessType,
-); //(m, n1, r)
+    RegistrationAlphaType,
+    RegistrationBetaType,
+    RegistrationJudgeSignatureType,
+    RegistrationJudgeSignatureType,
+    RegistrationPiN1Type,
+    RegistrationN2Type,
+); //(m, n1, r, alpha, beta, sigj_n1, sigj_n2, pi_n1, n2)
+pub type RegistrationRequestType = BlindedMessageType;
+pub type RegistrationNonceType = CommitmentPseudonymType;
+pub type RegistrationN2Type = CommitmentPseudonymType;
+pub type RegistrationAlphaType = Vec<u8>;
+pub type RegistrationBetaType = Vec<u8>;
+pub type RegistrationJudgeSignatureType = MAYOSignatureType;
+pub type RegistrationPiN1Type = Vec<u8>;
+pub type RegistrationStateType = UserStateType;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RegistrationJudgeOutput {
+    pub n1: RegistrationNonceType,
+    pub sigj_n1: RegistrationJudgeSignatureType,
+    pub pi_n1: RegistrationPiN1Type,
+    pub alpha: RegistrationAlphaType,
+    pub beta: RegistrationBetaType,
+    pub sigj_n2: RegistrationJudgeSignatureType,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RegistrationSenderOutput {
+    pub n1: RegistrationNonceType,
+    pub sigj_n1: RegistrationJudgeSignatureType,
+    pub pi_n1: RegistrationPiN1Type,
+    pub alpha: RegistrationAlphaType,
+    pub beta: RegistrationBetaType,
+    pub sigj_n2: RegistrationJudgeSignatureType,
+    pub n2: RegistrationN2Type,
+}
+
+pub struct SignatureType {
+    pub proof: VOLEKeccakThenMAYOProof,
+    pub registration: RegistrationSenderOutput,
+}
 
 /// This struct contains all the relevant parameters for the blind signature generation.
 ///
@@ -41,13 +81,16 @@ pub type UserStateType = (
 ///
 /// let m = b"Hello World!".to_vec();
 /// let mut additional_r: [u8; 32] = [0xff; 32];
+/// let (judge_pk, judge_sk) = bs.keygen();
+/// let judge_output = bs.reg_judge(&judge_sk);
+/// let registration = bs.reg_sender(&judge_output);
 ///
-/// let (s1, mut state) = bs.sign_1(&m);
-/// let bsig = bs.sign_2(&sk, &s1);
+/// let (s1, mut state) = bs.sign_1(&m, &registration);
+/// let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
 ///
 /// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
 ///
-/// assert!(bs.verify(&mut epk, &m, &mut sig, &mut additional_r))
+/// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
 /// ```
 pub struct BlindSignatureConservative {
     pub lambda: usize,

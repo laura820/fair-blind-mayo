@@ -1,4 +1,5 @@
-use super::{BlindSignatureConservative, MessageType, SignatureType};
+use super::registration::{REGISTRATION_N1_TAG, REGISTRATION_N2_TAG};
+use super::{BlindSignatureConservative, MessageType, PkType, SignatureType};
 use mayo_c_sys::shake256;
 
 impl BlindSignatureConservative {
@@ -9,6 +10,7 @@ impl BlindSignatureConservative {
     ///
     /// # Parameters
     /// - `epk`: the extended mayo public key
+    /// - `judge_pk`: the judge's MAYO public key
     /// - `m`: the message
     /// - `sig`: the signature, i.e., the zk proof
     ///
@@ -24,26 +26,47 @@ impl BlindSignatureConservative {
     ///
     /// let m = b"Hello World!".to_vec();
     /// let mut additional_r: [u8; 32] = [0xff; 32];
+    /// let (judge_pk, judge_sk) = bs.keygen();
+    /// let judge_output = bs.reg_judge(&judge_sk);
+    /// let registration = bs.reg_sender(&judge_output);
     ///
-    /// let (s1, mut state) = bs.sign_1(&m);
-    /// let bsig = bs.sign_2(&sk, &s1);
+    /// let (s1, mut state) = bs.sign_1(&m, &registration);
+    /// let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
     ///
     /// let mut sig = bs.sign_3(&pk_packed, &mut epk, &bsig, &mut state, &mut additional_r);
     ///
-    /// assert!(bs.verify(&mut epk, &m, &mut sig, &mut additional_r))
+    /// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
     /// ```
     pub fn verify(
         &self,
+        judge_pk: &PkType,
         epk: &mut [u8],
         m: &MessageType,
         sig: &mut SignatureType,
         additional_r: &mut [u8],
     ) -> bool {
+        if !self.verify_registration_tagged(
+            judge_pk,
+            &sig.registration.n1,
+            REGISTRATION_N1_TAG,
+            &sig.registration.sigj_n1,
+        ) {
+            return false;
+        }
+        if !self.verify_registration_tagged(
+            judge_pk,
+            &sig.registration.n2,
+            REGISTRATION_N2_TAG,
+            &sig.registration.sigj_n2,
+        ) {
+            return false;
+        }
+
         // 0. hash message to be of fixed length
         let mut msg_hash = vec![0; self.lambda / 8];
         unsafe { shake256(msg_hash.as_mut_ptr(), msg_hash.len(), m.as_ptr(), m.len()) };
         // 1. give it to the circuit
         self.vole_keccak_then_mayo
-            .verify(sig, epk, &mut msg_hash, additional_r)
+            .verify(&mut sig.proof, epk, &mut msg_hash, additional_r)
     }
 }

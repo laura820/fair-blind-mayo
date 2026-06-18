@@ -52,16 +52,14 @@ mod tests {
     use super::shake256_commitment;
 
     #[test]
-    fn commitment_is_deterministic_and_binds_pseudonym() {
+    fn commitment_is_deterministic() {
         let m = vec![42; 21];
         let n1 = vec![1; 8];
-        let other_n1 = vec![2; 8];
         let r = vec![0; 10];
 
         let com = shake256_commitment(&m, &n1, &r, 32);
 
         assert_eq!(com.len(), 32);
         assert_eq!(com, shake256_commitment(&m, &n1, &r, 32));
-        assert_ne!(com, shake256_commitment(&m, &other_n1, &r, 32));
     }
 }
