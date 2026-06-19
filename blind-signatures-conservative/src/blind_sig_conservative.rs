@@ -54,7 +54,9 @@ pub struct RegistrationSenderOutput {
 
 pub struct SignatureType {
     pub proof: VOLEKeccakThenMAYOProof,
-    pub registration: RegistrationSenderOutput,
+    pub pi_n1: RegistrationPiN1Type,
+    pub n2: RegistrationN2Type,
+    pub sigj_n2: RegistrationJudgeSignatureType,
 }
 
 /// This struct contains all the relevant parameters for the blind signature generation.
@@ -88,7 +90,15 @@ pub struct SignatureType {
 /// );
 /// let bsig = bs.sign_2(&sk, &s1, &n1, &sigj_n1, &judge_pk);
 ///
-/// let mut sig = bs.sign_3(&mut epk, &bsig, &mut state, &registration, &mut additional_r);
+/// let mut sig = bs.sign_3(
+///     &mut epk,
+///     &bsig,
+///     &mut state,
+///     &mut additional_r,
+///     &registration.pi_n1,
+///     &registration.n2,
+///     &registration.sigj_n2,
+/// );
 ///
 /// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
 /// ```

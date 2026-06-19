@@ -250,8 +250,10 @@ mod test {
                     &mut epk,
                     &response,
                     &mut state,
-                    &sender_output,
                     &mut additional_r,
+                    &sender_output.pi_n1,
+                    &sender_output.n2,
+                    &sender_output.sigj_n2,
                 );
 
                 assert!(bs.verify(

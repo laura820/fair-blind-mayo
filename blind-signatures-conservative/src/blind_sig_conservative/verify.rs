@@ -1,4 +1,4 @@
-use super::registration::{REGISTRATION_N1_TAG, REGISTRATION_N2_TAG};
+use super::registration::REGISTRATION_N2_TAG;
 use super::{BlindSignatureConservative, MessageType, PkType, SignatureType};
 use mayo_c_sys::shake256;
 
@@ -38,7 +38,15 @@ impl BlindSignatureConservative {
     /// );
     /// let bsig = bs.sign_2(&sk, &s1, &n1, &sigj_n1, &judge_pk);
     ///
-    /// let mut sig = bs.sign_3(&mut epk, &bsig, &mut state, &registration, &mut additional_r);
+    /// let mut sig = bs.sign_3(
+    ///     &mut epk,
+    ///     &bsig,
+    ///     &mut state,
+    ///     &mut additional_r,
+    ///     &registration.pi_n1,
+    ///     &registration.n2,
+    ///     &registration.sigj_n2,
+    /// );
     ///
     /// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
     /// ```
@@ -50,20 +58,7 @@ impl BlindSignatureConservative {
         sig: &mut SignatureType,
         additional_r: &mut [u8],
     ) -> bool {
-        if !self.verify_registration_tagged(
-            judge_pk,
-            &sig.registration.n1,
-            REGISTRATION_N1_TAG,
-            &sig.registration.sigj_n1,
-        ) {
-            return false;
-        }
-        if !self.verify_registration_tagged(
-            judge_pk,
-            &sig.registration.n2,
-            REGISTRATION_N2_TAG,
-            &sig.registration.sigj_n2,
-        ) {
+        if !self.verify_registration_tagged(judge_pk, &sig.n2, REGISTRATION_N2_TAG, &sig.sigj_n2) {
             return false;
         }
 

@@ -2,8 +2,8 @@ extern crate rand;
 use super::registration::REGISTRATION_N1_TAG;
 use super::{
     BlindSignatureConservative, BlindedMessageType, BlindedSignatureType, MessageType, PkType,
-    RegistrationJudgeSignatureType, RegistrationNonceType, RegistrationSenderOutput, SignatureType,
-    SkType, UserStateType,
+    RegistrationJudgeSignatureType, RegistrationN2Type, RegistrationNonceType,
+    RegistrationPiN1Type, SignatureType, SkType, UserStateType,
 };
 use crate::commitment::shake256_commitment;
 use mayo_c_sys::shake256;
@@ -124,7 +124,10 @@ impl BlindSignatureConservative {
     /// - `epk`: the extended mayo public key
     /// - `bsig` the MAYO preimage for the blinded message
     /// - `state`: the MAYO proof state from `sign_1`
-    /// - `registration`: the sender registration output
+    /// - `additional_r`: additional verifier randomness used by the proof
+    /// - `pi_n1`: the registration opening mask for `n1`
+    /// - `n2`: the second judge-provided registration nonce
+    /// - `sigj_n2`: the judge signature on `n2`
     ///
     /// # Example
     /// ```
@@ -150,15 +153,25 @@ impl BlindSignatureConservative {
     /// );
     /// let bsig = bs.sign_2(&sk, &s1, &n1, &sigj_n1, &judge_pk);
     ///
-    /// let mut sig = bs.sign_3(&mut epk, &bsig, &mut state, &registration, &mut additional_r);
+    /// let mut sig = bs.sign_3(
+    ///     &mut epk,
+    ///     &bsig,
+    ///     &mut state,
+    ///     &mut additional_r,
+    ///     &registration.pi_n1,
+    ///     &registration.n2,
+    ///     &registration.sigj_n2,
+    /// );
     /// ```
     pub fn sign_3(
         &self,
         epk: &mut [u8],
         bsig: &BlindedSignatureType,
         state: &mut UserStateType,
-        registration: &RegistrationSenderOutput,
         additional_r: &mut [u8],
+        pi_n1: &RegistrationPiN1Type,
+        n2: &RegistrationN2Type,
+        sigj_n2: &RegistrationJudgeSignatureType,
     ) -> SignatureType {
         let (pk, msg_hash, n1, rand) = state;
 
@@ -166,19 +179,12 @@ impl BlindSignatureConservative {
         assert_eq!(msg_hash.len(), self.lambda / 8);
         assert_eq!(n1.len(), self.lambda / 8);
         assert_eq!(rand.len(), self.lambda / 8);
-        assert_eq!(registration.n1.as_slice(), n1.as_slice());
-        assert_eq!(registration.alpha.len(), self.lambda / 4);
-        assert_eq!(registration.beta.len(), self.lambda / 2);
+        assert_eq!(pi_n1.len(), n1.len());
+        assert_eq!(n2.len(), n1.len());
         assert_eq!(
-            registration.sigj_n1.len(),
-            self.mayo.mayo_params.sig_bytes + n1.len() + 1
+            sigj_n2.len(),
+            self.mayo.mayo_params.sig_bytes + n2.len() + 1
         );
-        assert_eq!(
-            registration.sigj_n2.len(),
-            self.mayo.mayo_params.sig_bytes + registration.n2.len() + 1
-        );
-        assert_eq!(registration.pi_n1.len(), n1.len());
-        assert_eq!(registration.n2.len(), n1.len());
 
         // 0. recompute blinded message
         let com = shake256_commitment(msg_hash, n1, rand, self.mayo.mayo_params.m_digest_bytes);
@@ -202,7 +208,9 @@ impl BlindSignatureConservative {
 
         SignatureType {
             proof,
-            registration: registration.clone(),
+            pi_n1: pi_n1.clone(),
+            n2: n2.clone(),
+            sigj_n2: sigj_n2.clone(),
         }
     }
 }
@@ -234,8 +242,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
@@ -264,8 +274,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
@@ -324,8 +336,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
@@ -354,8 +368,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
@@ -414,8 +430,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
@@ -444,8 +462,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
@@ -504,8 +524,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
@@ -534,8 +556,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
@@ -594,8 +618,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
@@ -624,8 +650,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
@@ -684,8 +712,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             assert!(bs.verify(&judge_pk, &mut epk_u8, &m, &mut sig, &mut additional_r));
         }
@@ -714,8 +744,10 @@ mod test {
                 &mut epk_u8,
                 &bsig,
                 &mut state,
-                &registration,
                 &mut additional_r,
+                &registration.pi_n1,
+                &registration.n2,
+                &registration.sigj_n2,
             );
             duration = start.elapsed();
             sign3 += duration.as_micros() as f64 / 1_000.0;
@@ -774,8 +806,10 @@ mod test {
             &mut epk,
             &bsig,
             &mut state,
-            &registration,
             &mut additional_r,
+            &registration.pi_n1,
+            &registration.n2,
+            &registration.sigj_n2,
         );
         sig.proof.proof[0] += 1;
 
