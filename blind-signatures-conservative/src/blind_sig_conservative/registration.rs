@@ -239,7 +239,13 @@ mod test {
                 assert_eq!(sigj_n1.as_slice(), judge_output.sigj_n1.as_slice());
                 assert_eq!(state.2.as_slice(), judge_output.n1.as_slice());
 
-                let response = bs.sign_2(&sk, &judge_pk, &request, &sender_output);
+                let response = bs.sign_2(
+                    &sk,
+                    &request,
+                    &sender_output.n1,
+                    &sender_output.sigj_n1,
+                    &judge_pk,
+                );
                 let mut credential = bs.sign_3(
                     &mut epk,
                     &response,
