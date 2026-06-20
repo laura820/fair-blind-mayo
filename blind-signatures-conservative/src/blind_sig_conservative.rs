@@ -53,10 +53,10 @@ pub struct RegistrationSenderOutput {
 }
 
 pub struct SignatureType {
-    pub proof: VOLEKeccakThenMAYOProof,
-    pub pi_n1: RegistrationPiN1Type,
     pub n2: RegistrationN2Type,
     pub sigj_n2: RegistrationJudgeSignatureType,
+    pub proof: VOLEKeccakThenMAYOProof,
+    pub pi_n1: RegistrationPiN1Type,
 }
 
 /// This struct contains all the relevant parameters for the blind signature generation.

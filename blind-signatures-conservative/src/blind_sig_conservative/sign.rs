@@ -207,10 +207,10 @@ impl BlindSignatureConservative {
         );
 
         SignatureType {
-            proof,
-            pi_n1: pi_n1.clone(),
             n2: n2.clone(),
             sigj_n2: sigj_n2.clone(),
+            proof,
+            pi_n1: pi_n1.clone(),
         }
     }
 }
