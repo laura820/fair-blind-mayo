@@ -1,5 +1,8 @@
-use super::registration::REGISTRATION_N2_TAG;
-use super::{BlindSignatureConservative, MessageType, PkType, SignatureType};
+use super::registration::{REGISTRATION_N2_TAG, compute_n1_from_pi_n1, compute_n2};
+use super::{
+    BlindSignatureConservative, MessageType, PkType, RegistrationBetaType, RegistrationPiN1Type,
+    SignatureType,
+};
 use mayo_c_sys::shake256;
 
 impl BlindSignatureConservative {
@@ -13,6 +16,8 @@ impl BlindSignatureConservative {
     /// - `judge_pk`: the judge's MAYO public key
     /// - `m`: the message
     /// - `sig`: the signature, i.e., the zk proof
+    /// - `pi_n1`: the registration opening mask for `n1`
+    /// - `beta`: the registration value equal to `alpha`
     ///
     /// # Example
     /// ```
@@ -28,7 +33,7 @@ impl BlindSignatureConservative {
     /// let mut additional_r: [u8; 32] = [0xff; 32];
     /// let (judge_pk, judge_sk) = bs.keygen();
     /// let judge_output = bs.reg_judge(&judge_sk);
-    /// let registration = bs.reg_sender(&judge_output);
+    /// let registration = bs.reg_user(&judge_output);
     ///
     /// let (s1, n1, sigj_n1, mut state) = bs.sign_1(
     ///     &pk_packed,
@@ -48,7 +53,15 @@ impl BlindSignatureConservative {
     ///     &registration.sigj_n2,
     /// );
     ///
-    /// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
+    /// assert!(bs.verify(
+    ///     &judge_pk,
+    ///     &mut epk,
+    ///     &m,
+    ///     &mut sig,
+    ///     &mut additional_r,
+    ///     &registration.pi_n1,
+    ///     &registration.beta,
+    /// ))
     /// ```
     pub fn verify(
         &self,
@@ -57,7 +70,27 @@ impl BlindSignatureConservative {
         m: &MessageType,
         sig: &mut SignatureType,
         additional_r: &mut [u8],
+        pi_n1: &RegistrationPiN1Type,
+        beta: &RegistrationBetaType,
     ) -> bool {
+        if pi_n1.len() != self.lambda / 8 || beta.len() != self.lambda / 4 {
+            return false;
+        }
+
+        if sig.pi_n1.as_slice() != pi_n1.as_slice() || sig.n2.len() != self.lambda / 8 {
+            return false;
+        }
+
+        if sig.sigj_n2.len() != self.mayo.mayo_params.sig_bytes + sig.n2.len() + 1 {
+            return false;
+        }
+
+        let reconstructed_n1 = compute_n1_from_pi_n1(pi_n1, beta);
+        let expected_n2 = compute_n2(&reconstructed_n1, beta);
+        if sig.n2.as_slice() != expected_n2.as_slice() {
+            return false;
+        }
+
         if !self.verify_registration_tagged(judge_pk, &sig.n2, REGISTRATION_N2_TAG, &sig.sigj_n2) {
             return false;
         }

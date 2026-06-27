@@ -42,7 +42,7 @@ pub struct RegistrationJudgeOutput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct RegistrationSenderOutput {
+pub struct RegistrationUserOutput {
     pub n1: RegistrationNonceType,
     pub sigj_n1: RegistrationJudgeSignatureType,
     pub pi_n1: RegistrationPiN1Type,
@@ -80,7 +80,7 @@ pub struct SignatureType {
 /// let mut additional_r: [u8; 32] = [0xff; 32];
 /// let (judge_pk, judge_sk) = bs.keygen();
 /// let judge_output = bs.reg_judge(&judge_sk);
-/// let registration = bs.reg_sender(&judge_output);
+/// let registration = bs.reg_user(&judge_output);
 ///
 /// let (s1, n1, sigj_n1, mut state) = bs.sign_1(
 ///     &pk_packed,
@@ -100,7 +100,15 @@ pub struct SignatureType {
 ///     &registration.sigj_n2,
 /// );
 ///
-/// assert!(bs.verify(&judge_pk, &mut epk, &m, &mut sig, &mut additional_r))
+/// assert!(bs.verify(
+///     &judge_pk,
+///     &mut epk,
+///     &m,
+///     &mut sig,
+///     &mut additional_r,
+///     &registration.pi_n1,
+///     &registration.beta,
+/// ))
 /// ```
 pub struct BlindSignatureConservative {
     pub lambda: usize,

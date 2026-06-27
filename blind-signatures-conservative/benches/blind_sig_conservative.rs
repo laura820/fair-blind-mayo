@@ -35,7 +35,7 @@ fn bench_sign1(c: &mut Criterion) {
                     let (pk, _) = bs.keygen();
                     let (_judge_pk, judge_sk) = bs.keygen();
                     let judge_output = bs.reg_judge(&judge_sk);
-                    let registration = bs.reg_sender(&judge_output);
+                    let registration = bs.reg_user(&judge_output);
                     (bs, pk, registration)
                 }, // setup runs once per iteration
                 |(bs, pk, registration)| bs.sign_1(pk, &m, &registration.n1, &registration.sigj_n1), // only this is timed
@@ -63,11 +63,12 @@ fn bench_sign2(c: &mut Criterion) {
                     let bs = BlindSignatureConservative::setup(zktype);
                     let (pk, sk) = bs.keygen();
                     let (judge_pk, judge_sk) = bs.keygen();
-                    let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-                    let (s1, _, _, _) = bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
-                    (bs, sk, judge_pk, registration, s1)
+                    let registration = bs.reg_user(&bs.reg_judge(&judge_sk));
+                    let (s1, n1, sigj_n1, _) =
+                        bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
+                    (bs, sk, judge_pk, s1, n1, sigj_n1)
                 }, // setup runs once per iteration
-                |(bs, sk, judge_pk, registration, s1)| bs.sign_2(sk, judge_pk, s1, registration), // only this is timed
+                |(bs, sk, judge_pk, s1, n1, sigj_n1)| bs.sign_2(sk, s1, n1, sigj_n1, judge_pk), // only this is timed
                 BatchSize::SmallInput,
             );
         });
@@ -96,10 +97,10 @@ fn bench_sign3(c: &mut Criterion) {
                     let (pk, sk) = bs.keygen();
                     let (judge_pk, judge_sk) = bs.keygen();
                     let epk = bs.mayo.expand_pk(&pk);
-                    let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-                    let (s1, _, _, state) =
+                    let registration = bs.reg_user(&bs.reg_judge(&judge_sk));
+                    let (s1, n1, sigj_n1, state) =
                         bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
-                    let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
+                    let bsig = bs.sign_2(&sk, &s1, &n1, &sigj_n1, &judge_pk);
                     (bs, epk, bsig, state, registration)
                 }, // setup runs once per iteration
                 |(bs, epk, bsig, state, registration)| {
@@ -107,8 +108,10 @@ fn bench_sign3(c: &mut Criterion) {
                         epk,
                         bsig,
                         &mut state.clone(),
-                        registration,
                         &mut additional_r.clone(),
+                        &registration.pi_n1,
+                        &registration.n2,
+                        &registration.sigj_n2,
                     )
                 }, // only this is timed
                 BatchSize::SmallInput,
@@ -139,21 +142,31 @@ fn bench_verify(c: &mut Criterion) {
                     let (pk, sk) = bs.keygen();
                     let (judge_pk, judge_sk) = bs.keygen();
                     let mut epk = bs.mayo.expand_pk(&pk);
-                    let registration = bs.reg_sender(&bs.reg_judge(&judge_sk));
-                    let (s1, _, _, state) =
+                    let registration = bs.reg_user(&bs.reg_judge(&judge_sk));
+                    let (s1, n1, sigj_n1, state) =
                         bs.sign_1(&pk, &m, &registration.n1, &registration.sigj_n1);
-                    let bsig = bs.sign_2(&sk, &judge_pk, &s1, &registration);
+                    let bsig = bs.sign_2(&sk, &s1, &n1, &sigj_n1, &judge_pk);
                     let sig = bs.sign_3(
                         &mut epk,
                         &bsig,
                         &mut state.clone(),
-                        &registration,
                         &mut additional_r.clone(),
+                        &registration.pi_n1,
+                        &registration.n2,
+                        &registration.sigj_n2,
                     );
-                    (bs, judge_pk, epk, sig)
+                    (bs, judge_pk, epk, sig, registration)
                 }, // setup runs once per iteration
-                |(bs, judge_pk, epk, sig)| {
-                    bs.verify(judge_pk, epk, &m, sig, &mut additional_r.clone())
+                |(bs, judge_pk, epk, sig, registration)| {
+                    bs.verify(
+                        judge_pk,
+                        epk,
+                        &m,
+                        sig,
+                        &mut additional_r.clone(),
+                        &registration.pi_n1,
+                        &registration.beta,
+                    )
                 }, // only this is timed
                 BatchSize::SmallInput,
             );
